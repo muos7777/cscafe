@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS CAFE | القائمة الاستثنائية</title>
+
+    <!-- PyScript -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+    <!-- Google Fonts: Cairo for Arabic, Montserrat for English/Numbers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #050505;
+            --glass-bg: rgba(25, 25, 25, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --gold-accent: #D4AF37;
+            --gold-gradient: linear-gradient(135deg, #F3E5AB, #D4AF37, #AA7C11);
+            --text-main: #FFFFFF;
+            --text-dim: #A0A0A0;
+            --danger: #FF4C4C;
+            --whatsapp-color: #25D366;
+            --whatsapp-gray: #555555;
+            
+            /* متغيرات التحكم الديناميكي بالحجم والمكان */
+            --custom-font-size: 16px;
+            --custom-padding: 14px;
+            --content-order: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.08), transparent 25%);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Header */
+        header {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            color: var(--text-dim);
+            font-size: 13px;
+            margin-top: 3px;
+            outline: none;
+            transition: color 0.3s;
+        }
+
+        body.admin-mode .brand p {
+            border-bottom: 1px dashed var(--gold-accent);
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .auth-btn {
+            background: transparent;
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-btn:hover {
+            background: var(--gold-gradient);
+            color: #000;
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Main Layout */
+        .container {
+            padding: 20px 5%;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            flex: 1;
+        }
+
+        @media (max-width: 1100px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding-bottom: 100px;
+            }
+            .invoice-wrapper {
+                position: static !important;
+                margin-top: 20px;
+            }
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            grid-column: 1 / -1;
+            padding: 25px;
+            margin-bottom: 10px;
+            display: none;
+            animation: fadeInDown 0.5s ease forwards;
+        }
+
+        .admin-panel h2 {
+            color: var(--gold-accent);
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed var(--glass-border);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .premium-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .premium-input:focus {
+            outline: none;
+            border-color: var(--gold-accent);
+        }
+
+        .btn-solid {
+            background: var(--gold-gradient);
+            color: #000;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-solid:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Menu Section */
+        .menu-content {
+            display: flex;
+            flex-direction: column;
+            order: var(--content-order);
+        }
+
+        .section-block {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 12px;
+            outline: none;
+            transition: color 0.3s;
+        }
+
+        body.admin-mode .section-title {
+            border-bottom: 1px dashed var(--gold-accent);
+            cursor: pointer;
+        }
+        body.admin-mode .section-title::after {
+            content: " ✎ (اضغط للتعديل)";
+            font-size: 12px;
+            color: var(--gold-accent);
+            font-weight: normal;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        /* Product Cards */
+        .card {
+            padding: var(--custom-padding);
+            font-size: var(--custom-font-size);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 76, 76, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        body.admin-mode .delete-btn {
+            display: flex;
+        }
+
+        .delete-btn:hover {
+            background: rgb(255, 30, 30);
+            transform: scale(1.1);
+        }
+
+        .card-img-wrapper {
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3;
+            margin-bottom: 15px;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 0.85em;
+            color: var(--text-dim);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .card-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .price {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--gold-accent);
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+
+        .order-btn {
+            background: rgba(214, 175, 55, 0.1);
+            border: 1px solid var(--gold-accent);
+            color: var(--gold-accent);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .order-btn:hover {
+            background: var(--gold-gradient);
+            color: #000;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .order-badge {
+            position: absolute;
+            top: -10px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            font-size: 11px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Invoice Sidebar (English Mode) */
+        .invoice-wrapper {
+            position: sticky;
+            top: 100px;
+            padding: 25px;
+            height: fit-content;
+            font-family: 'Montserrat', sans-serif;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .invoice-wrapper h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bill-result {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 15px;
+            display: none;
+        }
+
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-dim);
+            gap: 10px;
+        }
+
+        .bill-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .bill-item-details span:first-child {
+            font-family: 'Cairo', sans-serif;
+            color: white;
+            font-weight: 600;
+        }
+
+        .bill-item-price-zone {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* زر حذف صنف من السلة */
+        .remove-cart-btn {
+            background: rgba(255, 76, 76, 0.15);
+            border: 1px solid rgba(255, 76, 76, 0.4);
+            color: var(--danger);
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .remove-cart-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .bill-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--glass-border);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-accent);
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .price-line {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .usd-price {
+            font-size: 13px;
+            color: #A0A0A0;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* قائمة اختيار رقم الغرفة */
+        .room-selector-block {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .room-selector-block label {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .premium-select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(5, 5, 5, 0.6);
+            border: 1px solid var(--gold-accent);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .premium-select.error-border {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 12px rgba(255, 76, 76, 0.4) !important;
+        }
+
+        .premium-select option {
+            background: #151515;
+            color: white;
+        }
+
+        .room-error-msg {
+            font-size: 12px;
+            color: var(--danger);
+            font-weight: 600;
+            margin-top: 4px;
+            display: none;
+            line-height: 1.4;
+        }
+
+        /* زر الواتساب الديناميكي */
+        .btn-whatsapp {
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            width: 100%;
+            margin-top: 15px;
+            display: none;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-whatsapp.state-unselected {
+            background: var(--whatsapp-gray) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .btn-whatsapp.state-selected {
+            background: var(--whatsapp-color) !important;
+            border: none;
+            color: white;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.25);
+        }
+
+        .btn-whatsapp.state-selected:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+            background: #20ba5a !important;
+        }
+
+        /* Modals Overlays */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            padding: 30px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .modal-box h3 { margin-bottom: 20px; font-size: 22px; }
+        .modal-box input { margin-bottom: 20px; text-align: center; letter-spacing: 5px; font-size: 18px; }
+
+        /* استايل النافذة الترحيبية */
+        .welcome-box {
+            max-width: 440px;
+            padding: 24px;
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            animation: fadeInScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .welcome-img-wrapper {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .welcome-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .welcome-box h2 {
+            font-size: 24px;
+            font-weight: 800;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-box p {
+            color: var(--text-dim);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- النافذة الترحيبية المنبثقة -->
+    <div id="welcome-modal" class="modal-overlay" style="display: flex;">
+        <div class="glass-panel welcome-box">
+            <div class="welcome-img-wrapper">
+                <img src="https://i.ibb.co/VYLVDC2X/Chat-GPT-Image-11-2026-01-15-34.png" class="welcome-img" alt="Welcome to CS CAFE">
+            </div>
+            <h2>Welcome to CS CAFE</h2>
+            <p>Experience the ultimate fusion of luxury, exceptional tastes, and premium service crafted just for you.</p>
+            <button class="btn-solid" style="width: 100%;" py-click="close_welcome_modal">Explore Menu</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="brand">
+            <h1>CS CAFE</h1>
+            <p id="cafe-subtitle" contenteditable="true">المذاق الاستثنائي يلتقي بالفخامة</p>
+        </div>
+        <button id="auth-btn" class="auth-btn" py-click="toggle_auth_modal">إدارة القائمة</button>
+    </header>
+
+    <main class="container">
+        
+        <!-- لوحة التحكم للمدير -->
+        <div id="admin-panel" class="glass-panel admin-panel">
+            <h2>إضافة صنف جديد ✦</h2>
+            <div class="admin-grid">
+                <div class="input-group">
+                    <label>اسم المشروب</label>
+                    <input type="text" id="new-name" class="premium-input" placeholder="V60 إثيوبي">
+                </div>
+                <div class="input-group">
+                    <label>وصف المشروب</label>
+                    <input type="text" id="new-desc" class="premium-input" placeholder="نكهات فاكهية">
+                </div>
+                <div class="input-group">
+                    <label>السعر (ج.م)</label>
+                    <input type="number" id="new-price" class="premium-input" placeholder="120">
+                </div>
+                <div class="input-group">
+                    <label>القسم المستهدف</label>
+                    <select id="new-category" class="premium-input">
+                        <option value="hot-container">القهوة المقطرة والساخنة</option>
+                        <option value="cold-container">المشروبات الباردة والمنعشة</option>
+                    </select>
+                </div>
+                <div class="input-group" style="grid-column: 1 / -2;">
+                    <label>رابط الصورة (URL)</label>
+                    <input type="url" id="new-image-url" class="premium-input" placeholder="https://example.com/image.jpg">
+                </div>
+                <button class="btn-solid" py-click="add_new_item">إدراج بالقائمة</button>
+            </div>
+
+            <h2>إدارة وهيكلة الأقسام ✦</h2>
+            <div class="admin-grid">
+                <div class="input-group" style="grid-column: 1 / -2;">
+                    <label>اسم القسم الجديد</label>
+                    <input type="text" id="new-section-title" class="premium-input" placeholder="مثال: الحلويات الفاخرة">
+                </div>
+                <button class="btn-solid" py-click="add_new_section">إنشاء القسم فوراً</button>
+            </div>
+
+            <h2>أداة تخصيص الأبعاد والمواقع الذكية ✦</h2>
+            <div class="admin-grid">
+                <div class="input-group">
+                    <label>حجم خط المشروبات</label>
+                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--custom-font-size', this.value)">
+                        <option value="14px">صغير جداً</option>
+                        <option value="16px" selected>افتراضي متناسق</option>
+                        <option value="18px">متوسط فخم</option>
+                        <option value="20px">كبير جداً</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>حواف وهيكل الكارد الإجمالي (Padding)</label>
+                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--custom-padding', this.value)">
+                        <option value="10px">مدمج ونحيف</option>
+                        <option value="14px" selected>حجم مريح</option>
+                        <option value="22px">واسع وفسيح</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>موقع وترتيب محتوى القائمة</label>
+                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--content-order', this.value)">
+                        <option value="normal" selected>افتراضي (المنيو يمين والفاتورة يسار)</option>
+                        <option value="1">عكسي (المنيو يسار والفاتورة يمين)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- المنيو الرئيسي -->
+        <div class="menu-content" id="main-menu-content">
+            
+            <div class="section-block" id="block-hot">
+                <h2 class="section-title" contenteditable="true">القهوة المقطرة والساخنة</h2>
+                <div id="hot-container" class="menu-grid">
+                    <div class="card glass-panel" id="item-chemex">
+                        <button class="delete-btn" py-click="delete_item">✕</button>
+                        <div class="card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600" class="card-img" alt="كيميكس">
+                        </div>
+                        <h3 class="card-title">كيميكس كولومبي</h3>
+                        <p class="card-desc">قهوة مختصة مقطرة بأداة الكيميكس، تتميز بقوام نقي وإيحاءات الكراميل والشوكولاتة الداكنة.</p>
+                        <div class="card-action">
+                            <span class="price">120 EGP</span>
+                            <button class="order-btn" id="btn-id-chemex" py-click="increment_qty" data-price="120" data-name="كيميكس كولومبي" data-qty="0">
+                                Order <span class="order-badge">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card glass-panel" id="item-flatwhite">
+                        <button class="delete-btn" py-click="delete_item">✕</button>
+                        <div class="card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600" class="card-img" alt="لاتيه">
+                        </div>
+                        <h3 class="card-title">فلات وايت</h3>
+                        <p class="card-desc">إسبريسو غني مع طبقة رقيقة من الحليب المبخر بسلاسة فائقة، لقوام مخملي متوازن.</p>
+                        <div class="card-action">
+                            <span class="price">85 EGP</span>
+                            <button class="order-btn" id="btn-id-flatwhite" py-click="increment_qty" data-price="85" data-name="فلات وايت" data-qty="0">
+                                Order <span class="order-badge">0</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-block" id="block-cold">
+                <h2 class="section-title" contenteditable="true">المشروبات الباردة والمنعشة</h2>
+                <div id="cold-container" class="menu-grid">
+                    <div class="card glass-panel" id="item-coldbrew">
+                        <button class="delete-btn" py-click="delete_item">✕</button>
+                        <div class="card-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1517701550927-30cfcb64c584?w=600" class="card-img" alt="كولد برو">
+                        </div>
+                        <h3 class="card-title">كولد برو سيجنتشر</h3>
+                        <p class="card-desc">قهوة منقوعة بالماء البارد لمدة 24 ساعة، خالية من الحمضية، تقدم مع ثلج نقي.</p>
+                        <div class="card-action">
+                            <span class="price">95 EGP</span>
+                            <button class="order-btn" id="btn-id-coldbrew" py-click="increment_qty" data-price="95" data-name="كولد برو سيجنتشر" data-qty="0">
+                                Order <span class="order-badge">0</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- الفاتورة الجانبية -->
+        <aside>
+            <div class="glass-panel invoice-wrapper">
+                <h2>Your Order</h2>
+                <button class="btn-solid" style="width: 100%; letter-spacing: 0.5px;" py-click="calculate_bill">Checkout & Total</button>
+
+                <div id="bill-result" class="bill-result">
+                    <div id="bill-items"></div>
+                    
+                    <div class="bill-total">
+                        <div class="price-line">
+                            <span>Total Bill</span>
+                            <span id="bill-total-price">0 EGP</span>
+                        </div>
+                        <div class="usd-price" id="bill-usd-price">~ 0.00 USD</div>
+                    </div>
+
+                    <!-- اختيار رقم الغرفة -->
+                    <div class="room-selector-block">
+                        <label for="room-select">Select Room Number</label>
+                        <select id="room-select" class="premium-select" onchange="on_room_change()">
+                            <option value="" selected>-- Choose Room --</option>
+                        </select>
+                        <div id="room-error" class="room-error-msg">
+                            ⚠️ الرجاء اختيار رقم الغرفة لتأكيد الطلب!<br>
+                            ⚠️ Please select a room number to confirm your order!
+                        </div>
+                    </div>
+
+                    <button id="whatsapp-btn" class="btn-whatsapp state-unselected" py-click="send_to_whatsapp">Order Now via WhatsApp</button>
+                </div>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Modal تسجيل الدخول -->
+    <div id="login-modal" class="modal-overlay">
+        <div class="glass-panel modal-box">
+            <h3>صلاحيات الإدارة</h3>
+            <input type="password" id="password-input" class="premium-input" placeholder="••••">
+            <button class="btn-solid" style="width: 100%; margin-bottom: 15px;" py-click="verify_password">دخول</button>
+            <button class="auth-btn" style="width: 100%;" py-click="toggle_auth_modal">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- بايثون (PyScript) -->
+    <script type="py">
+        from pyscript import document, window
+        import pyodide
+        import json
+
+        is_logged_in = False
+        whatsapp_message_global = "" 
+        usd_rate = 0.020 
+
+        def close_welcome_modal(event):
+            document.querySelector("#welcome-modal").style.display = "none"
+
+        def setup_room_numbers():
+            select_element = document.querySelector("#room-select")
+            for room in range(101, 119):
+                opt = document.createElement("option")
+                opt.value = f"Room {room}"
+                opt.text = f"Room {room}"
+                select_element.appendChild(opt)
+
+        setup_room_numbers()
+
+        def on_room_change_handler():
+            room_val = document.querySelector("#room-select").value
+            dropdown = document.querySelector("#room-select")
+            error_msg = document.querySelector("#room-error")
+            whatsapp_btn = document.querySelector("#whatsapp-btn")
+            
+            if room_val != "":
+                dropdown.classList.remove("error-border")
+                error_msg.style.display = "none"
+                whatsapp_btn.classList.remove("state-unselected")
+                whatsapp_btn.classList.add("state-selected")
+            else:
+                whatsapp_btn.classList.remove("state-selected")
+                whatsapp_btn.classList.add("state-unselected")
+
+        window.on_room_change = on_room_change_handler
+
+        def remove_item_from_cart(event):
+            target_id = event.target.closest(".remove-cart-btn").getAttribute("data-target-btn-id")
+            associated_btn = document.querySelector(f"#{target_id}")
+            
+            if associated_btn:
+                badge = associated_btn.querySelector(".order-badge")
+                current_qty = int(associated_btn.getAttribute("data-qty"))
+                
+                new_qty = current_qty - 1
+                if new_qty <= 0:
+                    associated_btn.setAttribute("data-qty", "0")
+                    badge.innerText = "0"
+                    badge.style.display = "none"
+                else:
+                    associated_btn.setAttribute("data-qty", str(new_qty))
+                    badge.innerText = str(new_qty)
+                
+                calculate_bill(None)
+
+        window.remove_item_from_cart = remove_item_from_cart
+
+        async def fetch_usd_rate():
+            global usd_rate
+            try:
+                response = await window.fetch("https://open.er-api.com/v6/latest/EGP")
+                data_text = await response.text()
+                data = json.loads(data_text)
+                usd_rate = data["rates"]["USD"]
+            except Exception as e:
+                print("Using baseline conversion rate.")
+
+        import asyncio
+        asyncio.ensure_future(fetch_usd_rate())
+
+        def toggle_auth_modal(event):
+            global is_logged_in
+            modal = document.querySelector("#login-modal")
+            admin_panel = document.querySelector("#admin-panel")
+            auth_btn = document.querySelector("#auth-btn")
+            
+            if is_logged_in:
+                is_logged_in = False
+                admin_panel.style.display = "none"
+                document.body.classList.remove("admin-mode")
+                auth_btn.innerText = "إدارة القائمة"
+            else:
+                if modal.style.display == "flex":
+                    modal.style.display = "none"
+                else:
+                    modal.style.display = "flex"
+                    document.querySelector("#password-input").value = ""
+
+        def verify_password(event):
+            global is_logged_in
+            password = document.querySelector("#password-input").value
+            modal = document.querySelector("#login-modal")
+            admin_panel = document.querySelector("#admin-panel")
+            auth_btn = document.querySelector("#auth-btn")
+            
+            if password == "345":
+                is_logged_in = True
+                modal.style.display = "none"
+                admin_panel.style.display = "block"
+                document.body.classList.add("admin-mode")
+                auth_btn.innerText = "إغلاق اللوحة ✕"
+            else:
+                window.alert("رمز المرور غير صحيح.")
+
+        def delete_item(event):
+            card = event.target.closest(".card")
+            if card:
+                card.remove()
+                calculate_bill(None)
+
+        def increment_qty(event):
+            btn = event.target.closest(".order-btn")
+            badge = btn.querySelector(".order-badge")
+            
+            current_qty = int(btn.getAttribute("data-qty"))
+            new_qty = current_qty + 1
+            
+            btn.setAttribute("data-qty", str(new_qty))
+            badge.innerText = str(new_qty)
+            badge.style.display = "flex"
+            
+            calculate_bill(None)
+
+        def add_new_section(event):
+            title = document.querySelector("#new-section-title").value.strip()
+            if not title:
+                window.alert("الرجاء إدخال اسم القسم الجديد أولاً.")
+                return
+            
+            section_id = f"custom-container-{window.id()}" if hasattr(window, 'id') else f"custom-{title}"
+            
+            section_html = f'''
+            <div class="section-block">
+                <h2 class="section-title" contenteditable="true">{title}</h2>
+                <div id="{section_id}" class="menu-grid"></div>
+            </div>
+            '''
+            
+            document.querySelector("#main-menu-content").insertAdjacentHTML('beforeend', section_html)
+            
+            new_option = document.createElement("option")
+            new_option.value = section_id
+            new_option.text = title
+            document.querySelector("#new-category").appendChild(new_option)
+            
+            document.querySelector("#new-section-title").value = ""
+            window.alert(f"تم إنشاء قسم '{title}' بنجاح.")
+
+        def add_new_item(event):
+            name = document.querySelector("#new-name").value.strip()
+            desc = document.querySelector("#new-desc").value.strip()
+            price = document.querySelector("#new-price").value.strip()
+            category = document.querySelector("#new-category").value
+            image_url = document.querySelector("#new-image-url").value.strip()
+
+            if not name or not price:
+                window.alert("الرجاء إدخال اسم المشروب وسعره.")
+                return
+
+            if not image_url:
+                image_url = "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=600"
+
+            unique_btn_id = f"btn-rand-{window.id()}" if hasattr(window, 'id') else f"btn-{name.replace(' ', '')}"
+
+            card_html = f'''
+            <div class="card glass-panel">
+                <button class="delete-btn" py-click="delete_item">✕</button>
+                <div class="card-img-wrapper">
+                    <img src="{image_url}" class="card-img" alt="{name}" onerror="this.src='https://images.unsplash.com/photo-1511920170033-f8396924c348?w=600'">
+                </div>
+                <h3 class="card-title">{name}</h3>
+                <p class="card-desc">{desc if desc else "مزيج فاخر محضر بعناية تامة ليناسب ذائقتك."}</p>
+                <div class="card-action">
+                    <span class="price">{price} EGP</span>
+                    <button class="order-btn" id="{unique_btn_id}" py-click="increment_qty" data-price="{price}" data-name="{name}" data-qty="0">
+                        Order <span class="order-badge">0</span>
+                    </button>
+                </div>
+            </div>
+            '''
+
+            try:
+                document.querySelector(f"#{category}").insertAdjacentHTML('beforeend', card_html)
+                window.alert("تمت إضافة المشروب بنجاح.")
+            except Exception as e:
+                window.alert("عذراً، حدث خطأ أثناء تحديد القسم.")
+
+            document.querySelector("#new-name").value = ""
+            document.querySelector("#new-desc").value = ""
+            document.querySelector("#new-price").value = ""
+            document.querySelector("#new-image-url").value = ""
+
+        def calculate_bill(event):
+            global whatsapp_message_global, usd_rate
+            order_buttons = document.querySelectorAll(".order-btn")
+            total = 0
+            summary_html = ""
+            whatsapp_text = "☕ *New Order from CS CAFE* ☕\n\n"
+            
+            for btn in order_buttons:
+                qty = int(btn.getAttribute("data-qty"))
+                if qty > 0:
+                    name = btn.getAttribute("data-name")
+                    price = int(btn.getAttribute("data-price"))
+                    btn_id = btn.getAttribute("id")
+                    item_total = qty * price
+                    total += item_total
+                    
+                    summary_html += f'''
+                    <div class="bill-item">
+                        <div class="bill-item-details">
+                            <span>{name}</span>
+                            <span style="color:var(--gold-accent); font-family:'Montserrat'; font-size:12px;">Qty: x{qty}</span>
+                        </div>
+                        <div class="bill-item-price-zone">
+                            <span style="font-weight:700;">{item_total} EGP</span>
+                            <button class="remove-cart-btn" onclick="remove_item_from_cart(event)" data-target-btn-id="{btn_id}">✕</button>
+                        </div>
+                    </div>
+                    '''
+                    whatsapp_text += f"▪️ {name} (x{qty}) -> {item_total} EGP\n"
+            
+            result_box = document.querySelector("#bill-result")
+            summary_div = document.querySelector("#bill-items")
+            total_span = document.querySelector("#bill-total-price")
+            usd_span = document.querySelector("#bill-usd-price")
+            whatsapp_btn = document.querySelector("#whatsapp-btn")
+            
+            if total > 0:
+                total_usd = round(total * usd_rate, 2)
+                whatsapp_text += f"\n💰 *Total Bill:* {total} EGP (~ {total_usd} USD)"
+                whatsapp_message_global = whatsapp_text
+                
+                summary_div.innerHTML = summary_html
+                total_span.innerText = f"{total} EGP"
+                usd_span.innerText = f"~ {total_usd} USD"
+                
+                result_box.style.display = "block"
+                whatsapp_btn.style.display = "block"
+                
+                on_room_change_handler()
+            else:
+                whatsapp_message_global = ""
+                summary_div.innerHTML = '<div class="bill-item" style="color: var(--danger); font-weight:700;">No items selected yet.</div>'
+                total_span.innerText = "0 EGP"
+                usd_span.innerText = "~ 0.00 USD"
+                result_box.style.display = "block"
+                whatsapp_btn.style.display = "none"
+
+        # دالة الإرسال إلى الواتساب مع التحقق الصارم المنبثق (Alert)
+        def send_to_whatsapp(event):
+            global whatsapp_message_global
+            room_val = document.querySelector("#room-select").value
+            dropdown = document.querySelector("#room-select")
+            error_msg = document.querySelector("#room-error")
+            
+            if room_val == "":
+                # إبراز الحقل بصرياً عبر الحدود الحمراء
+                dropdown.classList.add("error-border")
+                error_msg.style.display = "block"
+                
+                # إرجاع نافذة الإخطار المنبثقة الصارمة المنشودة (window.alert)
+                window.alert("⚠️ يرجى اختيار رقم الغرفة أولاً لإرسال الطلب!\n⚠️ Please select a room number first to submit your order!")
+                return
+            
+            # في حال اختيار الغرفة بنجاح، يتم تضمينها في الرسالة والتحويل للواتساب مباشرة
+            final_msg = f"{whatsapp_message_global}\n🏨 *📌 Location:* {room_val}"
+            encoded_msg = window.encodeURIComponent(final_msg)
+            whatsapp_url = f"https://wa.me/201500950515?text={encoded_msg}"
+            window.open(whatsapp_url, "_blank")
+    </script>
+</body>
+</html>
