@@ -88,7 +88,6 @@
             <button onclick="openCategoryManageModal()" class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 flex items-center gap-1"><span class="material-icons-round text-[16px]">category</span> الأقسام / Categories</button>
             <button onclick="openServicesSettingsModal()" class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 flex items-center gap-1"><span class="material-icons-round text-[16px]">directions_car</span> المركبات & المرشد / Vehicles & Guide</button>
             <button onclick="openFormModal()" class="bg-google-blue text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-google-blueHover flex items-center gap-1 shadow"><span class="material-icons-round text-[16px]">add</span> إضافة رحلة / Add Trip</button>
-            <!-- أزرار JSON الجديدة -->
             <button onclick="exportToJSON()" class="bg-green-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-green-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">save_alt</span> تصدير JSON</button>
             <button onclick="importFromJSONFile()" class="bg-amber-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">upload_file</span> استيراد JSON</button>
             <button onclick="refreshFromServerJSON()" class="bg-gray-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">sync</span> تحديث من travel_data.json</button>
@@ -107,8 +106,8 @@
 <!-- Modal تأكيد -->
 <div id="confirmModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><h3 id="confirmTitle" class="text-lg font-bold mb-2">تأكيد / Confirm</h3><p id="confirmText" class="text-gray-600 text-sm mb-6"></p><div class="flex gap-3 justify-end"><button onclick="closeModal('confirmModal')" class="px-4 py-2 text-gray-600">إلغاء / Cancel</button><button id="confirmBtn" class="px-4 py-2 bg-google-red text-white rounded-lg">تأكيد / Confirm</button></div></div></div>
 
-<!-- Modal المصادقة -->
-<div id="authModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold flex gap-2"><span class="material-icons-round text-google-blue">lock</span> الإدارة / Admin</h3><button onclick="closeModal('authModal')" class="text-gray-400"><span class="material-icons-round">close</span></button></div><input type="password" id="adminPassword" placeholder="كلمة المرور (345) / Password" class="g-input mb-4" onkeypress="if(event.key==='Enter') checkPassword()"><button onclick="checkPassword()" class="w-full bg-google-blue text-white py-2 rounded-lg">دخول / Login</button></div></div>
+<!-- Modal المصادقة (تم إزالة الرقم 345 من placeholder) -->
+<div id="authModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold flex gap-2"><span class="material-icons-round text-google-blue">lock</span> الإدارة / Admin</h3><button onclick="closeModal('authModal')" class="text-gray-400"><span class="material-icons-round">close</span></button></div><input type="password" id="adminPassword" placeholder="كلمة المرور / Password" class="g-input mb-4" onkeypress="if(event.key==='Enter') checkPassword()"><button onclick="checkPassword()" class="w-full bg-google-blue text-white py-2 rounded-lg">دخول / Login</button></div></div>
 
 <!-- Modal إدارة الأقسام -->
 <div id="categoryModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-md flex flex-col max-h-[80vh]"><div class="p-4 border-b bg-gray-50 flex justify-between"><h3 class="font-bold">إدارة الأقسام / Manage Categories</h3><button onclick="closeModal('categoryModal')"><span class="material-icons-round">close</span></button></div><div class="p-4 overflow-auto"><div class="flex gap-2 mb-4"><input type="text" id="newCategoryInput" class="g-input" placeholder="اسم قسم جديد / New category"><button onclick="addCategory()" class="bg-google-green text-white px-4 rounded-lg"><span class="material-icons-round">add</span></button></div><ul id="categoriesListAdmin" class="space-y-2"></ul></div></div></div>
@@ -317,7 +316,6 @@
                     if (imported.transportOptions) transportOptions = imported.transportOptions;
                     if (imported.trips) {
                         data = imported.trips;
-                        // التأكد من أن كل رحلة لها id فريد
                         const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
                         let nextId = maxId + 1;
                         data = data.map(item => ({ ...item, id: item.id || nextId++ }));
