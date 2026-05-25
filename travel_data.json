@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-25T08:28:13.670Z",
+  "timestamp": "2026-05-25T08:39:48.511Z",
   "categories": [
     "رحلات بحرية",
     "سفاري",
@@ -22,5 +22,15 @@
       "price": 60
     }
   ],
-  "trips": []
+  "trips": [
+    {
+      "id": 3,
+      "title": "رحلة الى النيل",
+      "price": 2,
+      "category": "رحلات بحرية",
+      "images": [],
+      "desc": "",
+      "discount": 0
+    }
+  ]
 }
