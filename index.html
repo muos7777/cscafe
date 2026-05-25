@@ -2,1125 +2,646 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CS CAFE | القائمة الاستثنائية</title>
-
-    <!-- PyScript -->
-    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
-    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-
-    <!-- Google Fonts: Cairo for Arabic, Montserrat for English/Numbers -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>CS travel | استكشف وجهتك - Explore your destination</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        google: { blue: '#1a73e8', blueHover: '#1b66c9', red: '#ea4335', yellow: '#fbbc04', green: '#34a853', surface: '#f8f9fa', border: '#dadce0', text: '#202124', muted: '#5f6368' }
+                    },
+                    fontFamily: { cairo: ['Cairo', 'sans-serif'], cursive: ['Dancing Script', 'cursive'] }
+                }
+            }
+        }
+    </script>
 
     <style>
-        :root {
-            --bg-deep: #050505;
-            --glass-bg: rgba(25, 25, 25, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --gold-accent: #D4AF37;
-            --gold-gradient: linear-gradient(135deg, #F3E5AB, #D4AF37, #AA7C11);
-            --text-main: #FFFFFF;
-            --text-dim: #A0A0A0;
-            --danger: #FF4C4C;
-            --whatsapp-color: #25D366;
-            --whatsapp-gray: #555555;
-            
-            /* متغيرات التحكم الديناميكي بالحجم والمكان */
-            --custom-font-size: 16px;
-            --custom-padding: 14px;
-            --content-order: normal;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 15% 50%, rgba(212, 175, 55, 0.05), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(212, 175, 55, 0.08), transparent 25%);
-            color: var(--text-main);
-            font-family: 'Cairo', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        /* Glassmorphism Effect */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-
-        /* Header */
-        header {
-            padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .brand h1 {
-            font-size: 28px;
-            font-weight: 800;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
-        }
-
-        .brand p {
-            color: var(--text-dim);
-            font-size: 13px;
-            margin-top: 3px;
-            outline: none;
-            transition: color 0.3s;
-        }
-
-        body.admin-mode .brand p {
-            border-bottom: 1px dashed var(--gold-accent);
-            cursor: pointer;
-            color: #fff;
-        }
-
-        .auth-btn {
-            background: transparent;
-            border: 1px solid var(--gold-accent);
-            color: var(--gold-accent);
-            padding: 8px 18px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .auth-btn:hover {
-            background: var(--gold-gradient);
-            color: #000;
-            border-color: transparent;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-        }
-
-        /* Main Layout */
-        .container {
-            padding: 20px 5%;
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 30px;
-            flex: 1;
-        }
-
-        @media (max-width: 1100px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding-bottom: 100px;
-            }
-            .invoice-wrapper {
-                position: static !important;
-                margin-top: 20px;
-            }
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            grid-column: 1 / -1;
-            padding: 25px;
-            margin-bottom: 10px;
-            display: none;
-            animation: fadeInDown 0.5s ease forwards;
-        }
-
-        .admin-panel h2 {
-            color: var(--gold-accent);
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
-
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            align-items: flex-end;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px dashed var(--glass-border);
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .input-group label {
-            font-size: 12px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .premium-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: white;
-            font-family: 'Cairo', sans-serif;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        .premium-input:focus {
-            outline: none;
-            border-color: var(--gold-accent);
-        }
-
-        .btn-solid {
-            background: var(--gold-gradient);
-            color: #000;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 800;
-            border: none;
-            cursor: pointer;
-            font-size: 15px;
-            transition: transform 0.3s, box-shadow 0.3s;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        .btn-solid:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        /* Menu Section */
-        .menu-content {
-            display: flex;
-            flex-direction: column;
-            order: var(--content-order);
-        }
-
-        .section-block {
-            margin-bottom: 40px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            position: relative;
-            padding-bottom: 12px;
-            outline: none;
-            transition: color 0.3s;
-        }
-
-        body.admin-mode .section-title {
-            border-bottom: 1px dashed var(--gold-accent);
-            cursor: pointer;
-        }
-        body.admin-mode .section-title::after {
-            content: " ✎ (اضغط للتعديل)";
-            font-size: 12px;
-            color: var(--gold-accent);
-            font-weight: normal;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
-        }
-
-        /* Product Cards */
-        .card {
-            padding: var(--custom-padding);
-            font-size: var(--custom-font-size);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(212, 175, 55, 0.3);
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 22px;
-            left: 22px;
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 76, 76, 0.9);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        body.admin-mode .delete-btn {
-            display: flex;
-        }
-
-        .delete-btn:hover {
-            background: rgb(255, 30, 30);
-            transform: scale(1.1);
-        }
-
-        .card-img-wrapper {
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-            aspect-ratio: 4/3;
-            margin-bottom: 15px;
-        }
-
-        .card-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s;
-        }
-
-        .card:hover .card-img {
-            transform: scale(1.05);
-        }
-
-        .card-title {
-            font-size: 1.1em;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .card-desc {
-            font-size: 0.85em;
-            color: var(--text-dim);
-            line-height: 1.5;
-            margin-bottom: 15px;
-            flex-grow: 1;
-        }
-
-        .card-action {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .price {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--gold-accent);
-            font-size: 1.2em;
-            font-weight: 700;
-        }
-
-        .order-btn {
-            background: rgba(214, 175, 55, 0.1);
-            border: 1px solid var(--gold-accent);
-            color: var(--gold-accent);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .order-btn:hover {
-            background: var(--gold-gradient);
-            color: #000;
-            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-        }
-
-        .order-badge {
-            position: absolute;
-            top: -10px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            font-size: 11px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        /* Invoice Sidebar (English Mode) */
-        .invoice-wrapper {
-            position: sticky;
-            top: 100px;
-            padding: 25px;
-            height: fit-content;
-            font-family: 'Montserrat', sans-serif;
-            direction: ltr;
-            text-align: left;
-        }
-
-        .invoice-wrapper h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-            letter-spacing: 0.5px;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .bill-result {
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 15px;
-            display: none;
-        }
-
-        .bill-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: var(--text-dim);
-            gap: 10px;
-        }
-
-        .bill-item-details {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex: 1;
-        }
-
-        .bill-item-details span:first-child {
-            font-family: 'Cairo', sans-serif;
-            color: white;
-            font-weight: 600;
-        }
-
-        .bill-item-price-zone {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        /* زر حذف صنف من السلة */
-        .remove-cart-btn {
-            background: rgba(255, 76, 76, 0.15);
-            border: 1px solid rgba(255, 76, 76, 0.4);
-            color: var(--danger);
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            transition: all 0.2s ease;
-        }
-
-        .remove-cart-btn:hover {
-            background: var(--danger);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .bill-total {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed var(--glass-border);
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--gold-accent);
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .price-line {
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .usd-price {
-            font-size: 13px;
-            color: #A0A0A0;
-            text-align: right;
-            font-weight: 500;
-        }
-
-        /* قائمة اختيار رقم الغرفة */
-        .room-selector-block {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .room-selector-block label {
-            font-size: 12px;
-            color: var(--text-dim);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .premium-select {
-            width: 100%;
-            padding: 10px 14px;
-            background: rgba(5, 5, 5, 0.6);
-            border: 1px solid var(--gold-accent);
-            border-radius: 10px;
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .premium-select.error-border {
-            border-color: var(--danger) !important;
-            box-shadow: 0 0 12px rgba(255, 76, 76, 0.4) !important;
-        }
-
-        .premium-select option {
-            background: #151515;
-            color: white;
-        }
-
-        .room-error-msg {
-            font-size: 12px;
-            color: var(--danger);
-            font-weight: 600;
-            margin-top: 4px;
-            display: none;
-            line-height: 1.4;
-        }
-
-        /* زر الواتساب الديناميكي */
-        .btn-whatsapp {
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: 'Montserrat', sans-serif;
-            width: 100%;
-            margin-top: 15px;
-            display: none;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-whatsapp.state-unselected {
-            background: var(--whatsapp-gray) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-        }
-
-        .btn-whatsapp.state-selected {
-            background: var(--whatsapp-color) !important;
-            border: none;
-            color: white;
-            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.25);
-        }
-
-        .btn-whatsapp.state-selected:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
-            background: #20ba5a !important;
-        }
-
-        /* Modals Overlays */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-box {
-            padding: 30px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-        }
-
-        .modal-box h3 { margin-bottom: 20px; font-size: 22px; }
-        .modal-box input { margin-bottom: 20px; text-align: center; letter-spacing: 5px; font-size: 18px; }
-
-        /* استايل النافذة الترحيبية */
-        .welcome-box {
-            max-width: 440px;
-            padding: 24px;
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-            animation: fadeInScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        .welcome-img-wrapper {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--glass-border);
-            margin-bottom: 20px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-        }
-
-        .welcome-img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .welcome-box h2 {
-            font-size: 24px;
-            font-weight: 800;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .welcome-box p {
-            color: var(--text-dim);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        :root { --base-font-size: 16px; }
+        html { font-size: var(--base-font-size); }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8f9fa; color: #202124; font-size: 1rem; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .g-input { width: 100%; border: 1px solid #dadce0; border-radius: 4px; padding: 0.75rem 1rem; outline: none; transition: all 0.2s; font-size: 0.95rem; }
+        .g-input:focus { border-color: #1a73e8; box-shadow: inset 0 0 0 1px #1a73e8; }
+        .slider-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .slider-img.active { opacity: 1; }
+        .g-shadow { box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15); }
+        .g-shadow-hover:hover { box-shadow: 0 4px 6px rgba(32,33,36,.12), 0 2px 8px rgba(32,33,36,.08); transform: translateY(-2px); }
+        .modal-overlay { background-color: rgba(32,33,36,0.6); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content { transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        body.modal-open { overflow: hidden; }
+        @media (max-width: 640px) { .g-input, select, textarea { font-size: 0.9rem; } .modal-content { max-height: 95vh; overflow-y: auto; } }
+        .zoom-btn { transition: all 0.2s; background: transparent; border-radius: 9999px; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; }
+        .zoom-btn:hover { background-color: #f1f3f4; }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <!-- النافذة الترحيبية المنبثقة -->
-    <div id="welcome-modal" class="modal-overlay" style="display: flex;">
-        <div class="glass-panel welcome-box">
-            <div class="welcome-img-wrapper">
-                <img src="https://i.ibb.co/VYLVDC2X/Chat-GPT-Image-11-2026-01-15-34.png" class="welcome-img" alt="Welcome to CS CAFE">
+<header class="bg-white g-shadow sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-2 sm:gap-4">
+        <div class="flex items-center gap-1 cursor-pointer select-none shrink-0" onclick="resetFilters()">
+            <span class="material-icons-round text-google-blue text-2xl sm:text-3xl">flight_takeoff</span>
+            <span class="text-lg sm:text-xl font-bold font-cairo text-gray-800">CS</span>
+            <span class="text-2xl sm:text-3xl font-cursive text-google-blue -mb-2">travel</span>
+        </div>
+        <div class="flex-grow max-w-2xl relative hidden sm:block">
+            <span class="material-icons-round absolute right-4 top-1/2 -translate-y-1/2 text-google-muted">search</span>
+            <input type="text" id="searchInput" oninput="filterData()" placeholder="ابحث عن وجهة، فندق، أو مدينة... / Search for destination, hotel..." class="w-full bg-gray-100 hover:bg-white hover:g-shadow focus:bg-white focus:g-shadow border border-transparent focus:border-transparent rounded-full py-2.5 pr-12 pl-4 outline-none">
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+            <div id="zoomButtonsContainer" class="hidden flex items-center gap-1">
+                <button onclick="changeFontSize(-1)" class="zoom-btn text-google-muted" title="تصغير / Zoom Out"><span class="material-icons-round text-xl">zoom_out</span></button>
+                <button onclick="changeFontSize(1)" class="zoom-btn text-google-muted" title="تكبير / Zoom In"><span class="material-icons-round text-xl">zoom_in</span></button>
+                <button onclick="resetFontSize()" class="zoom-btn text-google-muted" title="إعادة الحجم الافتراضي / Reset"><span class="material-icons-round text-xl">refresh</span></button>
             </div>
-            <h2>Welcome to CS CAFE</h2>
-            <p>Experience the ultimate fusion of luxury, exceptional tastes, and premium service crafted just for you.</p>
-            <button class="btn-solid" style="width: 100%;" py-click="close_welcome_modal">Explore Menu</button>
+            <button onclick="openAuthModal()" class="p-2 text-google-muted hover:bg-gray-100 rounded-full transition-colors relative">
+                <span class="material-icons-round">manage_accounts</span>
+                <span id="adminBadge" class="hidden absolute top-1 right-1 w-2.5 h-2.5 bg-google-green rounded-full border-2 border-white"></span>
+            </button>
         </div>
     </div>
+    <div class="px-4 pb-3 sm:hidden">
+        <div class="relative w-full"><span class="material-icons-round absolute right-4 top-1/2 -translate-y-1/2 text-google-muted">search</span>
+        <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; filterData();" placeholder="ابحث عن وجهة... / Search..." class="w-full bg-gray-100 rounded-full py-2 pr-12 pl-4 outline-none text-base"></div>
+    </div>
+</header>
 
-    <header>
-        <div class="brand">
-            <h1>CS CAFE</h1>
-            <p id="cafe-subtitle" contenteditable="true">المذاق الاستثنائي يلتقي بالفخامة</p>
+<div class="bg-white border-b border-google-border sticky top-16 z-30">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-2 overflow-x-auto hide-scrollbar" id="categoriesContainer"></div>
+</div>
+
+<div id="adminPanel" class="hidden max-w-7xl mx-auto px-4 mt-6">
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div><h2 class="text-google-blue font-bold flex items-center gap-2"><span class="material-icons-round">admin_panel_settings</span> وضع الإدارة نشط / Admin Mode Active</h2><p class="text-xs text-gray-600">إدارة الرحلات، الأقسام، المركبات والمرشد / Manage trips, categories, vehicles & guide</p></div>
+        <div class="flex flex-wrap gap-2">
+            <button onclick="openCategoryManageModal()" class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 flex items-center gap-1"><span class="material-icons-round text-[16px]">category</span> الأقسام / Categories</button>
+            <button onclick="openServicesSettingsModal()" class="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 flex items-center gap-1"><span class="material-icons-round text-[16px]">directions_car</span> المركبات & المرشد / Vehicles & Guide</button>
+            <button onclick="openFormModal()" class="bg-google-blue text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-google-blueHover flex items-center gap-1 shadow"><span class="material-icons-round text-[16px]">add</span> إضافة رحلة / Add Trip</button>
+            <!-- أزرار JSON الجديدة -->
+            <button onclick="exportToJSON()" class="bg-green-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-green-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">save_alt</span> تصدير JSON</button>
+            <button onclick="importFromJSONFile()" class="bg-amber-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">upload_file</span> استيراد JSON</button>
+            <button onclick="refreshFromServerJSON()" class="bg-gray-600 text-white px-3 py-2 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-700 flex items-center gap-1"><span class="material-icons-round text-[16px]">sync</span> تحديث من travel_data.json</button>
         </div>
-        <button id="auth-btn" class="auth-btn" py-click="toggle_auth_modal">إدارة القائمة</button>
-    </header>
+    </div>
+</div>
 
-    <main class="container">
-        
-        <!-- لوحة التحكم للمدير -->
-        <div id="admin-panel" class="glass-panel admin-panel">
-            <h2>إضافة صنف جديد ✦</h2>
-            <div class="admin-grid">
-                <div class="input-group">
-                    <label>اسم المشروب</label>
-                    <input type="text" id="new-name" class="premium-input" placeholder="V60 إثيوبي">
-                </div>
-                <div class="input-group">
-                    <label>وصف المشروب</label>
-                    <input type="text" id="new-desc" class="premium-input" placeholder="نكهات فاكهية">
-                </div>
-                <div class="input-group">
-                    <label>السعر (ج.م)</label>
-                    <input type="number" id="new-price" class="premium-input" placeholder="120">
-                </div>
-                <div class="input-group">
-                    <label>القسم المستهدف</label>
-                    <select id="new-category" class="premium-input">
-                        <option value="hot-container">القهوة المقطرة والساخنة</option>
-                        <option value="cold-container">المشروبات الباردة والمنعشة</option>
-                    </select>
-                </div>
-                <div class="input-group" style="grid-column: 1 / -2;">
-                    <label>رابط الصورة (URL)</label>
-                    <input type="url" id="new-image-url" class="premium-input" placeholder="https://example.com/image.jpg">
-                </div>
-                <button class="btn-solid" py-click="add_new_item">إدراج بالقائمة</button>
-            </div>
+<main class="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+    <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-google-muted"><span class="material-icons-round text-6xl mb-4 opacity-50">travel_explore</span><p>لا توجد وجهات مطابقة لبحثك. / No destinations match your search.</p></div>
+    <div id="gridContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6"></div>
+</main>
 
-            <h2>إدارة وهيكلة الأقسام ✦</h2>
-            <div class="admin-grid">
-                <div class="input-group" style="grid-column: 1 / -2;">
-                    <label>اسم القسم الجديد</label>
-                    <input type="text" id="new-section-title" class="premium-input" placeholder="مثال: الحلويات الفاخرة">
-                </div>
-                <button class="btn-solid" py-click="add_new_section">إنشاء القسم فوراً</button>
-            </div>
+<!-- Modal رسالة عامة -->
+<div id="msgModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm shadow-xl p-6 text-center"><span id="msgIcon" class="material-icons-round text-4xl mb-3">info</span><h3 id="msgTitle" class="text-lg font-bold mb-2">رسالة / Message</h3><p id="msgText" class="text-gray-600 text-sm mb-6"></p><button onclick="closeModal('msgModal')" class="w-full bg-gray-100 py-2 rounded-lg">موافق / OK</button></div></div>
 
-            <h2>أداة تخصيص الأبعاد والمواقع الذكية ✦</h2>
-            <div class="admin-grid">
-                <div class="input-group">
-                    <label>حجم خط المشروبات</label>
-                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--custom-font-size', this.value)">
-                        <option value="14px">صغير جداً</option>
-                        <option value="16px" selected>افتراضي متناسق</option>
-                        <option value="18px">متوسط فخم</option>
-                        <option value="20px">كبير جداً</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>حواف وهيكل الكارد الإجمالي (Padding)</label>
-                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--custom-padding', this.value)">
-                        <option value="10px">مدمج ونحيف</option>
-                        <option value="14px" selected>حجم مريح</option>
-                        <option value="22px">واسع وفسيح</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>موقع وترتيب محتوى القائمة</label>
-                    <select class="premium-input" onchange="document.documentElement.style.setProperty('--content-order', this.value)">
-                        <option value="normal" selected>افتراضي (المنيو يمين والفاتورة يسار)</option>
-                        <option value="1">عكسي (المنيو يسار والفاتورة يمين)</option>
-                    </select>
-                </div>
-            </div>
-        </div>
+<!-- Modal تأكيد -->
+<div id="confirmModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><h3 id="confirmTitle" class="text-lg font-bold mb-2">تأكيد / Confirm</h3><p id="confirmText" class="text-gray-600 text-sm mb-6"></p><div class="flex gap-3 justify-end"><button onclick="closeModal('confirmModal')" class="px-4 py-2 text-gray-600">إلغاء / Cancel</button><button id="confirmBtn" class="px-4 py-2 bg-google-red text-white rounded-lg">تأكيد / Confirm</button></div></div></div>
 
-        <!-- المنيو الرئيسي -->
-        <div class="menu-content" id="main-menu-content">
-            
-            <div class="section-block" id="block-hot">
-                <h2 class="section-title" contenteditable="true">القهوة المقطرة والساخنة</h2>
-                <div id="hot-container" class="menu-grid">
-                    <div class="card glass-panel" id="item-chemex">
-                        <button class="delete-btn" py-click="delete_item">✕</button>
-                        <div class="card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=600" class="card-img" alt="كيميكس">
-                        </div>
-                        <h3 class="card-title">كيميكس كولومبي</h3>
-                        <p class="card-desc">قهوة مختصة مقطرة بأداة الكيميكس، تتميز بقوام نقي وإيحاءات الكراميل والشوكولاتة الداكنة.</p>
-                        <div class="card-action">
-                            <span class="price">120 EGP</span>
-                            <button class="order-btn" id="btn-id-chemex" py-click="increment_qty" data-price="120" data-name="كيميكس كولومبي" data-qty="0">
-                                Order <span class="order-badge">0</span>
-                            </button>
-                        </div>
-                    </div>
+<!-- Modal المصادقة -->
+<div id="authModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold flex gap-2"><span class="material-icons-round text-google-blue">lock</span> الإدارة / Admin</h3><button onclick="closeModal('authModal')" class="text-gray-400"><span class="material-icons-round">close</span></button></div><input type="password" id="adminPassword" placeholder="كلمة المرور (345) / Password" class="g-input mb-4" onkeypress="if(event.key==='Enter') checkPassword()"><button onclick="checkPassword()" class="w-full bg-google-blue text-white py-2 rounded-lg">دخول / Login</button></div></div>
 
-                    <div class="card glass-panel" id="item-flatwhite">
-                        <button class="delete-btn" py-click="delete_item">✕</button>
-                        <div class="card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600" class="card-img" alt="لاتيه">
-                        </div>
-                        <h3 class="card-title">فلات وايت</h3>
-                        <p class="card-desc">إسبريسو غني مع طبقة رقيقة من الحليب المبخر بسلاسة فائقة، لقوام مخملي متوازن.</p>
-                        <div class="card-action">
-                            <span class="price">85 EGP</span>
-                            <button class="order-btn" id="btn-id-flatwhite" py-click="increment_qty" data-price="85" data-name="فلات وايت" data-qty="0">
-                                Order <span class="order-badge">0</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Modal إدارة الأقسام -->
+<div id="categoryModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-md flex flex-col max-h-[80vh]"><div class="p-4 border-b bg-gray-50 flex justify-between"><h3 class="font-bold">إدارة الأقسام / Manage Categories</h3><button onclick="closeModal('categoryModal')"><span class="material-icons-round">close</span></button></div><div class="p-4 overflow-auto"><div class="flex gap-2 mb-4"><input type="text" id="newCategoryInput" class="g-input" placeholder="اسم قسم جديد / New category"><button onclick="addCategory()" class="bg-google-green text-white px-4 rounded-lg"><span class="material-icons-round">add</span></button></div><ul id="categoriesListAdmin" class="space-y-2"></ul></div></div></div>
 
-            <div class="section-block" id="block-cold">
-                <h2 class="section-title" contenteditable="true">المشروبات الباردة والمنعشة</h2>
-                <div id="cold-container" class="menu-grid">
-                    <div class="card glass-panel" id="item-coldbrew">
-                        <button class="delete-btn" py-click="delete_item">✕</button>
-                        <div class="card-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1517701550927-30cfcb64c584?w=600" class="card-img" alt="كولد برو">
-                        </div>
-                        <h3 class="card-title">كولد برو سيجنتشر</h3>
-                        <p class="card-desc">قهوة منقوعة بالماء البارد لمدة 24 ساعة، خالية من الحمضية، تقدم مع ثلج نقي.</p>
-                        <div class="card-action">
-                            <span class="price">95 EGP</span>
-                            <button class="order-btn" id="btn-id-coldbrew" py-click="increment_qty" data-price="95" data-name="كولد برو سيجنتشر" data-qty="0">
-                                Order <span class="order-badge">0</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- Modal إدارة الخدمات -->
+<div id="servicesModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-md flex flex-col max-h-[85vh]"><div class="p-4 border-b bg-gray-50 flex justify-between"><h3 class="font-bold">⚙️ إعدادات الخدمات / Service Settings</h3><button onclick="closeModal('servicesModal')"><span class="material-icons-round">close</span></button></div><div class="p-4 overflow-auto"><div class="mb-6"><label class="block font-bold mb-2">💰 سعر المرشد (ج.م) / Tour Guide Fee (EGP)</label><input type="number" id="guidePriceInput" class="g-input"><button onclick="saveGuidePrice()" class="mt-2 w-full bg-google-blue text-white py-2 rounded-lg">تحديث / Update</button></div><div class="border-t pt-4"><div class="flex justify-between"><h4 class="font-bold">🚗 خيارات المركبات / Transport Options</h4><button onclick="showAddTransportForm()" class="text-google-blue text-sm">+ إضافة مركبة / Add Vehicle</button></div><div id="transportListContainer" class="space-y-2 my-3"></div><div id="addTransportForm" class="hidden bg-gray-50 p-3 rounded-xl"><input type="text" id="newTransName" class="g-input mb-2 text-sm" placeholder="الاسم / Name"><input type="number" id="newTransPrice" class="g-input mb-2 text-sm" placeholder="السعر / Price"><div class="flex gap-2"><button onclick="addNewTransport()" class="bg-google-green text-white px-3 py-1 rounded">إضافة / Add</button><button onclick="hideAddTransportForm()" class="bg-gray-300 px-3 py-1 rounded">إلغاء / Cancel</button></div></div></div></div></div></div>
 
-        </div>
+<!-- Modal إضافة/تعديل رحلة -->
+<div id="formModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-2xl flex flex-col max-h-[90vh]"><div class="p-4 border-b flex justify-between sticky top-0 bg-white"><h3 id="formTitle" class="font-bold text-xl text-google-blue">إضافة رحلة / Add Trip</h3><button onclick="closeModal('formModal')"><span class="material-icons-round">close</span></button></div><div class="p-6 overflow-auto space-y-4"><input type="hidden" id="editItemId"><div><label>اسم الوجهة / Destination</label><input type="text" id="itemTitle" class="g-input"></div><div class="grid grid-cols-2 gap-4"><div><label>سعر الفرد (ج.م) / Price per person</label><input type="number" id="itemPrice" class="g-input"></div><div><label>القسم / Category</label><select id="itemCategory" class="g-input bg-white"></select></div></div><div><label>روابط الصور (سطر لكل رابط) / Image URLs (one per line)</label><textarea id="itemImages" class="g-input" rows="3" dir="ltr"></textarea></div><div><label>تفاصيل الرحلة / Trip Details</label><textarea id="itemDesc" class="g-input" rows="5"></textarea></div></div><div class="p-4 border-t bg-gray-50 flex justify-end gap-3"><button onclick="closeModal('formModal')" class="px-5 py-2 text-gray-600">إلغاء / Cancel</button><button onclick="saveItem()" class="px-5 py-2 bg-google-blue text-white rounded-lg shadow">حفظ / Save</button></div></div></div>
 
-        <!-- الفاتورة الجانبية -->
-        <aside>
-            <div class="glass-panel invoice-wrapper">
-                <h2>Your Order</h2>
-                <button class="btn-solid" style="width: 100%; letter-spacing: 0.5px;" py-click="calculate_bill">Checkout & Total</button>
-
-                <div id="bill-result" class="bill-result">
-                    <div id="bill-items"></div>
-                    
-                    <div class="bill-total">
-                        <div class="price-line">
-                            <span>Total Bill</span>
-                            <span id="bill-total-price">0 EGP</span>
-                        </div>
-                        <div class="usd-price" id="bill-usd-price">~ 0.00 USD</div>
-                    </div>
-
-                    <!-- اختيار رقم الغرفة -->
-                    <div class="room-selector-block">
-                        <label for="room-select">Select Room Number</label>
-                        <select id="room-select" class="premium-select" onchange="on_room_change()">
-                            <option value="" selected>-- Choose Room --</option>
+<!-- Modal عرض التفاصيل والحجز -->
+<div id="viewModal" class="modal-overlay fixed inset-0 z-50 flex justify-center p-0 sm:p-4 items-end sm:items-center">
+    <div class="modal-content bg-white w-full max-w-3xl sm:rounded-2xl h-[95vh] sm:h-auto sm:max-h-[90vh] flex flex-col shadow-xl overflow-hidden rounded-t-2xl relative">
+        <button onclick="closeModal('viewModal'); stopSlider();" class="absolute top-4 right-4 z-20 bg-black/50 text-white p-2 rounded-full"><span class="material-icons-round">close</span></button>
+        <div class="relative w-full h-64 sm:h-80 bg-gray-200 shrink-0 group overflow-hidden" id="sliderContainer"><div id="sliderImages" class="w-full h-full relative"></div><button onclick="changeSlide(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-1 rounded-full opacity-0 group-hover:opacity-100"><span class="material-icons-round">chevron_left</span></button><button onclick="changeSlide(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/70 text-white p-1 rounded-full opacity-0 group-hover:opacity-100"><span class="material-icons-round">chevron_right</span></button><div id="sliderDots" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5"></div><div class="absolute bottom-4 right-4 bg-google-green text-white px-4 py-1.5 rounded-lg font-bold flex items-center gap-1 shadow-lg"><span id="viewPrice" class="text-xl"></span><span class="text-sm">ج.م / فرد (EGP/person)</span></div></div>
+        <div class="p-5 overflow-auto flex-grow bg-white">
+            <div class="flex flex-wrap gap-2 mb-2"><span id="viewCategory" class="text-xs bg-blue-50 text-google-blue px-2 py-1 rounded"></span><span id="viewDiscountBadge" class="hidden text-xs bg-red-100 text-google-red px-2 py-1 rounded"></span></div>
+            <h2 id="viewTitle" class="text-xl sm:text-2xl font-bold mb-4"></h2>
+            <h3 class="font-bold border-b pb-2 mb-3 flex items-center gap-2"><span class="material-icons-round text-google-yellow">menu_book</span> تفاصيل الرحلة / Trip Details</h3>
+            <p id="viewDesc" class="text-gray-600 whitespace-pre-wrap text-sm mb-6"></p>
+            <div class="bg-gray-50 border rounded-xl p-4">
+                <h3 class="font-bold mb-4 flex items-center gap-2"><span class="material-icons-round text-google-green">event_available</span> حجز وإرسال الطلب / Booking & Send Request</h3>
+                <div class="space-y-4">
+                    <div><label class="block text-sm font-medium mb-1">عدد الأفراد / Number of Guests</label><input type="number" id="bookGuests" min="1" value="1" class="g-input bg-white"></div>
+                    <div><label class="block text-sm font-medium mb-1">طريقة التوصيل / Transport Method</label><select id="bookTransport" class="g-input bg-white"></select></div>
+                    <div class="flex items-center gap-2"><input type="checkbox" id="bookGuide" class="w-4 h-4"><label for="bookGuide" class="text-sm font-medium cursor-pointer">مرشد سياحي (إضافي) / Tour Guide (extra)</label></div>
+                    <div><label class="block text-sm font-medium mb-1">العرض بالعملة / Currency Display</label>
+                        <select id="currencySelect" class="g-input bg-white" onchange="updateTotalCurrency()">
+                            <option value="EGP">جنيه مصري (EGP)</option>
+                            <option value="USD">دولار أمريكي (USD)</option>
+                            <option value="EUR">يورو (EUR)</option>
                         </select>
-                        <div id="room-error" class="room-error-msg">
-                            ⚠️ الرجاء اختيار رقم الغرفة لتأكيد الطلب!<br>
-                            ⚠️ Please select a room number to confirm your order!
-                        </div>
                     </div>
-
-                    <button id="whatsapp-btn" class="btn-whatsapp state-unselected" py-click="send_to_whatsapp">Order Now via WhatsApp</button>
-                </div>
-            </div>
-        </aside>
-
-    </main>
-
-    <!-- Modal تسجيل الدخول -->
-    <div id="login-modal" class="modal-overlay">
-        <div class="glass-panel modal-box">
-            <h3>صلاحيات الإدارة</h3>
-            <input type="password" id="password-input" class="premium-input" placeholder="••••">
-            <button class="btn-solid" style="width: 100%; margin-bottom: 15px;" py-click="verify_password">دخول</button>
-            <button class="auth-btn" style="width: 100%;" py-click="toggle_auth_modal">إلغاء</button>
-        </div>
-    </div>
-
-    <!-- بايثون (PyScript) -->
-    <script type="py">
-        from pyscript import document, window
-        import pyodide
-        import json
-
-        is_logged_in = False
-        whatsapp_message_global = "" 
-        usd_rate = 0.020 
-
-        def close_welcome_modal(event):
-            document.querySelector("#welcome-modal").style.display = "none"
-
-        def setup_room_numbers():
-            select_element = document.querySelector("#room-select")
-            for room in range(101, 119):
-                opt = document.createElement("option")
-                opt.value = f"Room {room}"
-                opt.text = f"Room {room}"
-                select_element.appendChild(opt)
-
-        setup_room_numbers()
-
-        def on_room_change_handler():
-            room_val = document.querySelector("#room-select").value
-            dropdown = document.querySelector("#room-select")
-            error_msg = document.querySelector("#room-error")
-            whatsapp_btn = document.querySelector("#whatsapp-btn")
-            
-            if room_val != "":
-                dropdown.classList.remove("error-border")
-                error_msg.style.display = "none"
-                whatsapp_btn.classList.remove("state-unselected")
-                whatsapp_btn.classList.add("state-selected")
-            else:
-                whatsapp_btn.classList.remove("state-selected")
-                whatsapp_btn.classList.add("state-unselected")
-
-        window.on_room_change = on_room_change_handler
-
-        def remove_item_from_cart(event):
-            target_id = event.target.closest(".remove-cart-btn").getAttribute("data-target-btn-id")
-            associated_btn = document.querySelector(f"#{target_id}")
-            
-            if associated_btn:
-                badge = associated_btn.querySelector(".order-badge")
-                current_qty = int(associated_btn.getAttribute("data-qty"))
-                
-                new_qty = current_qty - 1
-                if new_qty <= 0:
-                    associated_btn.setAttribute("data-qty", "0")
-                    badge.innerText = "0"
-                    badge.style.display = "none"
-                else:
-                    associated_btn.setAttribute("data-qty", str(new_qty))
-                    badge.innerText = str(new_qty)
-                
-                calculate_bill(None)
-
-        window.remove_item_from_cart = remove_item_from_cart
-
-        async def fetch_usd_rate():
-            global usd_rate
-            try:
-                response = await window.fetch("https://open.er-api.com/v6/latest/EGP")
-                data_text = await response.text()
-                data = json.loads(data_text)
-                usd_rate = data["rates"]["USD"]
-            except Exception as e:
-                print("Using baseline conversion rate.")
-
-        import asyncio
-        asyncio.ensure_future(fetch_usd_rate())
-
-        def toggle_auth_modal(event):
-            global is_logged_in
-            modal = document.querySelector("#login-modal")
-            admin_panel = document.querySelector("#admin-panel")
-            auth_btn = document.querySelector("#auth-btn")
-            
-            if is_logged_in:
-                is_logged_in = False
-                admin_panel.style.display = "none"
-                document.body.classList.remove("admin-mode")
-                auth_btn.innerText = "إدارة القائمة"
-            else:
-                if modal.style.display == "flex":
-                    modal.style.display = "none"
-                else:
-                    modal.style.display = "flex"
-                    document.querySelector("#password-input").value = ""
-
-        def verify_password(event):
-            global is_logged_in
-            password = document.querySelector("#password-input").value
-            modal = document.querySelector("#login-modal")
-            admin_panel = document.querySelector("#admin-panel")
-            auth_btn = document.querySelector("#auth-btn")
-            
-            if password == "345":
-                is_logged_in = True
-                modal.style.display = "none"
-                admin_panel.style.display = "block"
-                document.body.classList.add("admin-mode")
-                auth_btn.innerText = "إغلاق اللوحة ✕"
-            else:
-                window.alert("رمز المرور غير صحيح.")
-
-        def delete_item(event):
-            card = event.target.closest(".card")
-            if card:
-                card.remove()
-                calculate_bill(None)
-
-        def increment_qty(event):
-            btn = event.target.closest(".order-btn")
-            badge = btn.querySelector(".order-badge")
-            
-            current_qty = int(btn.getAttribute("data-qty"))
-            new_qty = current_qty + 1
-            
-            btn.setAttribute("data-qty", str(new_qty))
-            badge.innerText = str(new_qty)
-            badge.style.display = "flex"
-            
-            calculate_bill(None)
-
-        def add_new_section(event):
-            title = document.querySelector("#new-section-title").value.strip()
-            if not title:
-                window.alert("الرجاء إدخال اسم القسم الجديد أولاً.")
-                return
-            
-            section_id = f"custom-container-{window.id()}" if hasattr(window, 'id') else f"custom-{title}"
-            
-            section_html = f'''
-            <div class="section-block">
-                <h2 class="section-title" contenteditable="true">{title}</h2>
-                <div id="{section_id}" class="menu-grid"></div>
-            </div>
-            '''
-            
-            document.querySelector("#main-menu-content").insertAdjacentHTML('beforeend', section_html)
-            
-            new_option = document.createElement("option")
-            new_option.value = section_id
-            new_option.text = title
-            document.querySelector("#new-category").appendChild(new_option)
-            
-            document.querySelector("#new-section-title").value = ""
-            window.alert(f"تم إنشاء قسم '{title}' بنجاح.")
-
-        def add_new_item(event):
-            name = document.querySelector("#new-name").value.strip()
-            desc = document.querySelector("#new-desc").value.strip()
-            price = document.querySelector("#new-price").value.strip()
-            category = document.querySelector("#new-category").value
-            image_url = document.querySelector("#new-image-url").value.strip()
-
-            if not name or not price:
-                window.alert("الرجاء إدخال اسم المشروب وسعره.")
-                return
-
-            if not image_url:
-                image_url = "https://images.unsplash.com/photo-1511920170033-f8396924c348?w=600"
-
-            unique_btn_id = f"btn-rand-{window.id()}" if hasattr(window, 'id') else f"btn-{name.replace(' ', '')}"
-
-            card_html = f'''
-            <div class="card glass-panel">
-                <button class="delete-btn" py-click="delete_item">✕</button>
-                <div class="card-img-wrapper">
-                    <img src="{image_url}" class="card-img" alt="{name}" onerror="this.src='https://images.unsplash.com/photo-1511920170033-f8396924c348?w=600'">
-                </div>
-                <h3 class="card-title">{name}</h3>
-                <p class="card-desc">{desc if desc else "مزيج فاخر محضر بعناية تامة ليناسب ذائقتك."}</p>
-                <div class="card-action">
-                    <span class="price">{price} EGP</span>
-                    <button class="order-btn" id="{unique_btn_id}" py-click="increment_qty" data-price="{price}" data-name="{name}" data-qty="0">
-                        Order <span class="order-badge">0</span>
+                    <div class="bg-white p-3 rounded-lg border text-center">
+                        <div class="text-sm text-gray-600">الإجمالي المقدر / Estimated Total</div>
+                        <div id="totalPriceDisplay" class="text-2xl font-bold text-google-blue">0 EGP</div>
+                        <div id="conversionNote" class="text-xs text-gray-400 mt-1"></div>
+                    </div>
+                    <button id="btnWhatsApp" class="w-full mt-2 bg-google-green hover:bg-green-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.538a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                        إرسال الطلب عبر واتساب / Send via WhatsApp
                     </button>
                 </div>
             </div>
-            '''
+        </div>
+        <div id="viewAdminControls" class="hidden p-4 border-t bg-gray-50 flex flex-wrap gap-2 justify-end">
+            <button id="btnDiscountView" class="px-3 py-2 bg-white border border-yellow-400 text-yellow-600 rounded-lg text-sm flex items-center gap-1"><span class="material-icons-round text-[18px]">percent</span> خصم البيع / Sale Discount</button>
+            <button id="btnEditView" class="px-3 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm"><span class="material-icons-round text-[18px]">edit</span> تعديل / Edit</button>
+            <button id="btnDeleteView" class="px-3 py-2 bg-white border border-red-200 text-google-red rounded-lg text-sm"><span class="material-icons-round text-[18px]">delete</span> حذف / Delete</button>
+        </div>
+    </div>
+</div>
 
-            try:
-                document.querySelector(f"#{category}").insertAdjacentHTML('beforeend', card_html)
-                window.alert("تمت إضافة المشروب بنجاح.")
-            except Exception as e:
-                window.alert("عذراً، حدث خطأ أثناء تحديد القسم.")
+<script>
+    // ==================== البيانات والإعدادات الأساسية ====================
+    const ADMIN_PASS = "345";
+    let isAdmin = false;
+    let activeCategory = "الكل";
+    let categories = ["الكل", "رحلات بحرية", "سفاري", "أماكن تاريخية", "فنادق ومنتجعات"];
+    let data = [
+        { id: 1, title: "رحلة الأهرامات والمتحف المصري / Pyramids & Egyptian Museum", price: "600", discount: 0, category: "أماكن تاريخية", images: ["https://images.unsplash.com/photo-1539667468225-eebb663053e6?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1572252009286-268caa9281f5?auto=format&fit=crop&w=800&q=80"], desc: "استمتع برحلة تاريخية كاملة - أهرامات الجيزة، أبو الهول والمتحف المصري." },
+        { id: 2, title: "فندق فورسيزونز الإسكندرية / Four Seasons Alexandria", price: "4500", discount: 0, category: "فنادق ومنتجعات", images: ["https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80"], desc: "إقامة فاخرة مطلة على البحر. تشمل غرفة مزدوجة وإفطار." }
+    ];
+    let guidePrice = 50;
+    let transportOptions = [{ name: "بدون توصيل / No Transport", price: 0 },{ name: "عربة / Car", price: 60 },{ name: "موتسيكل / Motorcycle", price: 60 }];
+    const WHATSAPP_NUMBER = "201500950515";
+    
+    let currentSlideIndex = 0, sliderInterval, currentImagesArray = [];
+    let currentRates = { USD: 1, EUR: 1 };
+    let activeItemPriceEGP = 0;
+    let currentViewItem = null;
 
-            document.querySelector("#new-name").value = ""
-            document.querySelector("#new-desc").value = ""
-            document.querySelector("#new-price").value = ""
-            document.querySelector("#new-image-url").value = ""
-
-        def calculate_bill(event):
-            global whatsapp_message_global, usd_rate
-            order_buttons = document.querySelectorAll(".order-btn")
-            total = 0
-            summary_html = ""
-            whatsapp_text = "☕ *New Order from CS CAFE* ☕\n\n"
-            
-            for btn in order_buttons:
-                qty = int(btn.getAttribute("data-qty"))
-                if qty > 0:
-                    name = btn.getAttribute("data-name")
-                    price = int(btn.getAttribute("data-price"))
-                    btn_id = btn.getAttribute("id")
-                    item_total = qty * price
-                    total += item_total
-                    
-                    summary_html += f'''
-                    <div class="bill-item">
-                        <div class="bill-item-details">
-                            <span>{name}</span>
-                            <span style="color:var(--gold-accent); font-family:'Montserrat'; font-size:12px;">Qty: x{qty}</span>
-                        </div>
-                        <div class="bill-item-price-zone">
-                            <span style="font-weight:700;">{item_total} EGP</span>
-                            <button class="remove-cart-btn" onclick="remove_item_from_cart(event)" data-target-btn-id="{btn_id}">✕</button>
-                        </div>
-                    </div>
-                    '''
-                    whatsapp_text += f"▪️ {name} (x{qty}) -> {item_total} EGP\n"
-            
-            result_box = document.querySelector("#bill-result")
-            summary_div = document.querySelector("#bill-items")
-            total_span = document.querySelector("#bill-total-price")
-            usd_span = document.querySelector("#bill-usd-price")
-            whatsapp_btn = document.querySelector("#whatsapp-btn")
-            
-            if total > 0:
-                total_usd = round(total * usd_rate, 2)
-                whatsapp_text += f"\n💰 *Total Bill:* {total} EGP (~ {total_usd} USD)"
-                whatsapp_message_global = whatsapp_text
-                
-                summary_div.innerHTML = summary_html
-                total_span.innerText = f"{total} EGP"
-                usd_span.innerText = f"~ {total_usd} USD"
-                
-                result_box.style.display = "block"
-                whatsapp_btn.style.display = "block"
-                
-                on_room_change_handler()
-            else:
-                whatsapp_message_global = ""
-                summary_div.innerHTML = '<div class="bill-item" style="color: var(--danger); font-weight:700;">No items selected yet.</div>'
-                total_span.innerText = "0 EGP"
-                usd_span.innerText = "~ 0.00 USD"
-                result_box.style.display = "block"
-                whatsapp_btn.style.display = "none"
-
-        # دالة الإرسال إلى الواتساب مع التحقق الصارم المنبثق (Alert)
-        def send_to_whatsapp(event):
-            global whatsapp_message_global
-            room_val = document.querySelector("#room-select").value
-            dropdown = document.querySelector("#room-select")
-            error_msg = document.querySelector("#room-error")
-            
-            if room_val == "":
-                # إبراز الحقل بصرياً عبر الحدود الحمراء
-                dropdown.classList.add("error-border")
-                error_msg.style.display = "block"
-                
-                # إرجاع نافذة الإخطار المنبثقة الصارمة المنشودة (window.alert)
-                window.alert("⚠️ يرجى اختيار رقم الغرفة أولاً لإرسال الطلب!\n⚠️ Please select a room number first to submit your order!")
-                return
-            
-            # في حال اختيار الغرفة بنجاح، يتم تضمينها في الرسالة والتحويل للواتساب مباشرة
-            final_msg = f"{whatsapp_message_global}\n🏨 *📌 Location:* {room_val}"
-            encoded_msg = window.encodeURIComponent(final_msg)
-            whatsapp_url = f"https://wa.me/201500950515?text={encoded_msg}"
-            window.open(whatsapp_url, "_blank")
-    </script>
+    // ==================== دوال العملة ====================
+    async function fetchExchangeRates() {
+        try {
+            const res = await fetch('https://api.frankfurter.app/latest?from=EGP&to=USD,EUR');
+            if (!res.ok) throw new Error();
+            const ratesData = await res.json();
+            currentRates.USD = ratesData.rates.USD;
+            currentRates.EUR = ratesData.rates.EUR;
+        } catch (err) {
+            console.warn("فشل جلب الأسعار، استخدام أسعار تقريبية");
+            currentRates.USD = 0.032;
+            currentRates.EUR = 0.029;
+        }
+    }
+    
+    function calculateTotalEGP() {
+        const guests = parseInt(document.getElementById('bookGuests')?.value) || 1;
+        const transportSelect = document.getElementById('bookTransport');
+        const selectedPrice = transportSelect.options[transportSelect.selectedIndex]?.value ? parseInt(transportSelect.options[transportSelect.selectedIndex].value) : 0;
+        const hasGuide = document.getElementById('bookGuide')?.checked || false;
+        const guideCost = hasGuide ? guidePrice : 0;
+        return (guests * activeItemPriceEGP) + selectedPrice + guideCost;
+    }
+    
+    async function updateTotalCurrency() {
+        const totalEGP = calculateTotalEGP();
+        const currency = document.getElementById('currencySelect').value;
+        let totalConverted = totalEGP;
+        let symbol = "EGP";
+        if (currency === "USD") { totalConverted = totalEGP * currentRates.USD; symbol = "USD"; }
+        else if (currency === "EUR") { totalConverted = totalEGP * currentRates.EUR; symbol = "EUR"; }
+        document.getElementById('totalPriceDisplay').innerHTML = totalConverted.toFixed(2) + " " + symbol;
+        document.getElementById('conversionNote').innerText = (currency !== "EGP") ? `سعر الصرف تقريبي 1 EGP = ${currency === "USD" ? currentRates.USD.toFixed(4) : currentRates.EUR.toFixed(4)} ${currency}` : "";
+    }
+    
+    function bindTotalUpdateEvents() {
+        const guestsInput = document.getElementById('bookGuests');
+        const transportSelect = document.getElementById('bookTransport');
+        const guideCheck = document.getElementById('bookGuide');
+        if(guestsInput) guestsInput.removeEventListener('input', updateTotalCurrency);
+        if(transportSelect) transportSelect.removeEventListener('change', updateTotalCurrency);
+        if(guideCheck) guideCheck.removeEventListener('change', updateTotalCurrency);
+        if(guestsInput) guestsInput.addEventListener('input', updateTotalCurrency);
+        if(transportSelect) transportSelect.addEventListener('change', updateTotalCurrency);
+        if(guideCheck) guideCheck.addEventListener('change', updateTotalCurrency);
+    }
+    
+    function setupWhatsAppButton() {
+        const btn = document.getElementById('btnWhatsApp');
+        if(!btn) return;
+        btn.onclick = () => {
+            const guests = parseInt(document.getElementById('bookGuests').value) || 1;
+            const transportSelect = document.getElementById('bookTransport');
+            const transportName = transportSelect.options[transportSelect.selectedIndex]?.text || "";
+            const transportPrice = parseInt(transportSelect.options[transportSelect.selectedIndex]?.value) || 0;
+            const hasGuide = document.getElementById('bookGuide').checked;
+            const guideCost = hasGuide ? guidePrice : 0;
+            const totalEGP = (guests * activeItemPriceEGP) + transportPrice + guideCost;
+            const itemTitle = document.getElementById('viewTitle').innerText;
+            let msg = `مرحباً، أريد حجز هذه الرحلة:%0A------------------%0A📌 الوجهة: ${itemTitle}%0A👥 عدد الأفراد: ${guests}%0A🚗 التوصيل: ${transportName} (${transportPrice} EGP)%0A👨‍🏫 مرشد سياحي: ${hasGuide ? "نعم +"+guideCost+" EGP" : "لا"}%0A------------------%0A💰 الإجمالي: ${totalEGP} EGP`;
+            const encodedMsg = encodeURIComponent(msg);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMsg}`;
+            window.open(whatsappUrl, '_blank');
+        };
+    }
+    
+    // ==================== دوال التكبير ====================
+    function setBaseFontSize(val) { let newSize = Math.min(24, Math.max(12, val)); document.documentElement.style.setProperty('--base-font-size', newSize + 'px'); localStorage.setItem('cstravel_fontSize', newSize); }
+    function changeFontSize(delta) { let current = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--base-font-size')) || 16; setBaseFontSize(current + delta); }
+    function resetFontSize() { setBaseFontSize(16); }
+    function loadFontSize() { let saved = localStorage.getItem('cstravel_fontSize'); if(saved) setBaseFontSize(parseFloat(saved)); else setBaseFontSize(16); }
+    function updateZoomButtonsVisibility() { const container = document.getElementById('zoomButtonsContainer'); if(isAdmin) container.classList.remove('hidden'); else container.classList.add('hidden'); }
+    
+    // ==================== التخزين المحلي + JSON ====================
+    function saveAllToLocal() {
+        localStorage.setItem('cstravel_data', JSON.stringify(data));
+        localStorage.setItem('cstravel_cats', JSON.stringify(categories));
+        localStorage.setItem('cstravel_guidePrice', guidePrice);
+        localStorage.setItem('cstravel_transports', JSON.stringify(transportOptions));
+    }
+    
+    function loadFromLocal() {
+        const savedData = localStorage.getItem('cstravel_data');
+        const savedCats = localStorage.getItem('cstravel_cats');
+        const savedGuide = localStorage.getItem('cstravel_guidePrice');
+        const savedTrans = localStorage.getItem('cstravel_transports');
+        if(savedData) data = JSON.parse(savedData);
+        if(savedCats) categories = JSON.parse(savedCats);
+        if(savedGuide) guidePrice = parseInt(savedGuide) || 50;
+        if(savedTrans) transportOptions = JSON.parse(savedTrans);
+        data = data.map(item => ({...item, discount: item.discount || 0}));
+        if(!Array.isArray(transportOptions)) transportOptions = [{ name: "بدون توصيل / No Transport", price: 0 }];
+        if(!categories.includes("الكل")) categories.unshift("الكل");
+        loadFontSize();
+    }
+    
+    // تصدير جميع البيانات إلى JSON وتنزيلها
+    function exportToJSON() {
+        const exportData = {
+            version: "1.0",
+            timestamp: new Date().toISOString(),
+            categories: categories.filter(c => c !== "الكل"),
+            guidePrice: guidePrice,
+            transportOptions: transportOptions,
+            trips: data
+        };
+        const jsonStr = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([jsonStr], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cstravel_backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showMessage("تصدير ناجح", "تم تصدير جميع البيانات إلى ملف JSON.", "download");
+    }
+    
+    // استيراد البيانات من ملف JSON (رفع ملف محلي)
+    function importFromJSONFile() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const imported = JSON.parse(ev.target.result);
+                    if (imported.categories) categories = ["الكل", ...imported.categories];
+                    if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
+                    if (imported.transportOptions) transportOptions = imported.transportOptions;
+                    if (imported.trips) {
+                        data = imported.trips;
+                        // التأكد من أن كل رحلة لها id فريد
+                        const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                        let nextId = maxId + 1;
+                        data = data.map(item => ({ ...item, id: item.id || nextId++ }));
+                    }
+                    saveAllToLocal();
+                    renderCategories();
+                    renderGrid();
+                    if (isAdmin) {
+                        renderCategoriesListAdmin();
+                        renderTransportList();
+                        document.getElementById('guidePriceInput').value = guidePrice;
+                    }
+                    showMessage("استيراد ناجح", "تم استيراد البيانات بنجاح وتحديث الصفحة.", "check_circle");
+                } catch(err) {
+                    showMessage("خطأ", "الملف غير صالح أو تالف.", "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+    
+    // تحديث البيانات من ملف JSON على الخادم (افتراضياً travel_data.json)
+    async function refreshFromServerJSON() {
+        try {
+            const response = await fetch(`travel_data.json?t=${Date.now()}`, { cache: 'no-store' });
+            if (!response.ok) throw new Error('File not found');
+            const imported = await response.json();
+            if (imported.categories) categories = ["الكل", ...imported.categories];
+            if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
+            if (imported.transportOptions) transportOptions = imported.transportOptions;
+            if (imported.trips) {
+                data = imported.trips;
+                const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                let nextId = maxId + 1;
+                data = data.map(item => ({ ...item, id: item.id || nextId++ }));
+            }
+            saveAllToLocal();
+            renderCategories();
+            renderGrid();
+            if (isAdmin) {
+                renderCategoriesListAdmin();
+                renderTransportList();
+                document.getElementById('guidePriceInput').value = guidePrice;
+            }
+            showMessage("تحديث ناجح", "تم تحديث البيانات من travel_data.json.", "sync");
+        } catch(e) {
+            showMessage("خطأ", "لم يتم العثور على ملف travel_data.json في نفس المسار.", "error");
+        }
+    }
+    
+    // ==================== دوال مساعدة للواجهة ====================
+    function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); if(document.querySelectorAll('.modal-overlay.active').length === 0) document.body.classList.remove('modal-open'); }
+    function showMessage(title, text, icon="info") { document.getElementById('msgTitle').innerText = title; document.getElementById('msgText').innerText = text; document.getElementById('msgIcon').innerText = icon; openModal('msgModal'); }
+    
+    // ==================== دوال البحث والتصفية ====================
+    let searchKeyword = "";
+    function filterData() {
+        searchKeyword = document.getElementById('searchInput')?.value.toLowerCase() || "";
+        renderGrid();
+    }
+    function resetFilters() {
+        activeCategory = "الكل";
+        document.getElementById('searchInput').value = "";
+        document.getElementById('searchInputMobile').value = "";
+        searchKeyword = "";
+        renderCategories();
+        renderGrid();
+    }
+    
+    // ==================== عرض الأقسام ====================
+    function renderCategories() {
+        const container = document.getElementById('categoriesContainer');
+        if(!container) return;
+        container.innerHTML = categories.map(cat => `
+            <button onclick="setActiveCategory('${cat}')" class="px-4 py-1.5 rounded-full whitespace-nowrap transition-colors text-sm ${activeCategory === cat ? 'bg-google-blue text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}">${cat}</button>
+        `).join('');
+    }
+    function setActiveCategory(cat) { activeCategory = cat; renderCategories(); renderGrid(); }
+    
+    // ==================== عرض البطاقات ====================
+    function renderGrid() {
+        const container = document.getElementById('gridContainer');
+        const emptyState = document.getElementById('emptyState');
+        let filtered = data.filter(item => {
+            if(activeCategory !== "الكل" && item.category !== activeCategory) return false;
+            if(searchKeyword && !item.title.toLowerCase().includes(searchKeyword) && !item.desc.toLowerCase().includes(searchKeyword)) return false;
+            return true;
+        });
+        if(filtered.length === 0) { emptyState.classList.remove('hidden'); container.innerHTML = ""; return; }
+        emptyState.classList.add('hidden');
+        container.innerHTML = filtered.map(item => {
+            const finalPrice = item.price - (item.price * (item.discount/100));
+            const discountBadge = item.discount > 0 ? `<span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">-${item.discount}%</span>` : "";
+            const imgUrl = (item.images && item.images[0]) ? item.images[0] : "https://via.placeholder.com/400?text=No+Image";
+            return `
+                <div class="bg-white rounded-xl g-shadow g-shadow-hover overflow-hidden cursor-pointer transition-all duration-200" onclick="openViewModal(${item.id})">
+                    <div class="relative h-48"><img src="${imgUrl}" class="w-full h-full object-cover">${discountBadge}</div>
+                    <div class="p-4"><h3 class="font-bold text-lg mb-1">${item.title}</h3><div class="flex justify-between items-center"><span class="text-google-blue font-bold">${finalPrice} ج.م</span><span class="text-xs text-gray-500">${item.category}</span></div></div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    // ==================== دوال المشرف ====================
+    function openAuthModal() { openModal('authModal'); }
+    function checkPassword() {
+        const pass = document.getElementById('adminPassword').value;
+        if(pass === ADMIN_PASS) {
+            isAdmin = true;
+            closeModal('authModal');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            document.getElementById('adminBadge').classList.remove('hidden');
+            updateZoomButtonsVisibility();
+            showMessage("تم الدخول", "وضع الإدارة نشط الآن.", "admin_panel_settings");
+            renderGrid();
+        } else { showMessage("خطأ", "كلمة المرور غير صحيحة.", "error"); }
+        document.getElementById('adminPassword').value = "";
+    }
+    function logoutAdmin() { isAdmin = false; document.getElementById('adminPanel').classList.add('hidden'); document.getElementById('adminBadge').classList.add('hidden'); updateZoomButtonsVisibility(); renderGrid(); showMessage("تم الخروج", "تم الخروج من وضع الإدارة.", "info"); }
+    
+    // ==================== إدارة الأقسام ====================
+    function openCategoryManageModal() { if(!isAdmin) return; renderCategoriesListAdmin(); openModal('categoryModal'); }
+    function renderCategoriesListAdmin() {
+        const ul = document.getElementById('categoriesListAdmin');
+        if(!ul) return;
+        ul.innerHTML = categories.filter(c => c !== "الكل").map(cat => `<li class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${cat}</span><button onclick="deleteCategory('${cat}')" class="text-red-500"><span class="material-icons-round">delete</span></button></li>`).join('');
+    }
+    function addCategory() {
+        const input = document.getElementById('newCategoryInput');
+        const newCat = input.value.trim();
+        if(!newCat) return showMessage("تنبيه", "الرجاء إدخال اسم القسم.", "warning");
+        if(categories.includes(newCat)) return showMessage("تنبيه", "القسم موجود مسبقاً.", "warning");
+        categories.push(newCat);
+        saveAllToLocal();
+        renderCategories();
+        renderCategoriesListAdmin();
+        input.value = "";
+        showMessage("تم", "تمت إضافة القسم بنجاح.", "check_circle");
+    }
+    function deleteCategory(cat) {
+        if(cat === "الكل") return;
+        if(data.some(item => item.category === cat)) { showMessage("لا يمكن الحذف", "يوجد رحلات تابعة لهذا القسم. قم بتغيير قسمها أولاً.", "error"); return; }
+        categories = categories.filter(c => c !== cat);
+        saveAllToLocal();
+        renderCategories();
+        if(activeCategory === cat) setActiveCategory("الكل");
+        openCategoryManageModal();
+        showMessage("تم", "تم حذف القسم.", "check_circle");
+    }
+    
+    // ==================== إدارة الخدمات ====================
+    function openServicesSettingsModal() { if(!isAdmin) return; document.getElementById('guidePriceInput').value = guidePrice; renderTransportList(); closeAddTransportForm(); openModal('servicesModal'); }
+    function renderTransportList() {
+        const container = document.getElementById('transportListContainer');
+        if(!container) return;
+        container.innerHTML = transportOptions.map((t, idx) => `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${t.name} (${t.price} ج.م)</span><button onclick="deleteTransport(${idx})" class="text-red-500"><span class="material-icons-round text-sm">delete</span></button></div>`).join('');
+    }
+    function deleteTransport(idx) { transportOptions.splice(idx,1); saveAllToLocal(); renderTransportList(); }
+    function showAddTransportForm() { document.getElementById('addTransportForm').classList.remove('hidden'); }
+    function hideAddTransportForm() { document.getElementById('addTransportForm').classList.add('hidden'); document.getElementById('newTransName').value = ""; document.getElementById('newTransPrice').value = ""; }
+    function closeAddTransportForm() { hideAddTransportForm(); }
+    function addNewTransport() {
+        const name = document.getElementById('newTransName').value.trim();
+        const price = parseInt(document.getElementById('newTransPrice').value);
+        if(!name || isNaN(price)) return showMessage("تنبيه", "الرجاء إدخال اسم وسعر صحيح.", "warning");
+        transportOptions.push({ name, price });
+        saveAllToLocal();
+        renderTransportList();
+        hideAddTransportForm();
+        showMessage("تم", "تمت إضافة وسيلة النقل.", "check_circle");
+    }
+    function saveGuidePrice() { const newPrice = parseInt(document.getElementById('guidePriceInput').value); if(!isNaN(newPrice) && newPrice>=0) { guidePrice = newPrice; saveAllToLocal(); showMessage("تم", "تم تحديث سعر المرشد.", "check_circle"); } else showMessage("خطأ", "قيمة غير صحيحة.", "error"); }
+    
+    // ==================== إضافة / تعديل رحلة ====================
+    function openFormModal(editId=null) {
+        if(!isAdmin) return;
+        const titleElem = document.getElementById('formTitle');
+        const idField = document.getElementById('editItemId');
+        const titleInput = document.getElementById('itemTitle');
+        const priceInput = document.getElementById('itemPrice');
+        const catSelect = document.getElementById('itemCategory');
+        const imagesText = document.getElementById('itemImages');
+        const descText = document.getElementById('itemDesc');
+        
+        catSelect.innerHTML = categories.filter(c=>c!=="الكل").map(c=>`<option value="${c}">${c}</option>`).join('');
+        if(editId !== null) {
+            const item = data.find(i=>i.id==editId);
+            if(item) {
+                titleElem.innerText = "تعديل رحلة / Edit Trip";
+                idField.value = item.id;
+                titleInput.value = item.title;
+                priceInput.value = item.price;
+                catSelect.value = item.category;
+                imagesText.value = Array.isArray(item.images) ? item.images.join('\n') : '';
+                descText.value = item.desc;
+            }
+        } else {
+            titleElem.innerText = "إضافة رحلة / Add Trip";
+            idField.value = "";
+            titleInput.value = "";
+            priceInput.value = "";
+            catSelect.value = categories[1] || "";
+            imagesText.value = "";
+            descText.value = "";
+        }
+        openModal('formModal');
+    }
+    function saveItem() {
+        const id = parseInt(document.getElementById('editItemId').value);
+        const title = document.getElementById('itemTitle').value.trim();
+        const price = parseInt(document.getElementById('itemPrice').value);
+        const category = document.getElementById('itemCategory').value;
+        const imagesRaw = document.getElementById('itemImages').value;
+        const images = imagesRaw.split('\n').filter(url=>url.trim()!=="");
+        const desc = document.getElementById('itemDesc').value.trim();
+        if(!title || isNaN(price)) return showMessage("خطأ", "الرجاء تعبئة جميع الحقول.", "error");
+        if(!category) return showMessage("خطأ", "اختر القسم.", "error");
+        if(id) {
+            const index = data.findIndex(i=>i.id===id);
+            if(index!==-1) { data[index] = {...data[index], title, price, category, images, desc, discount: data[index].discount||0}; }
+        } else {
+            const newId = data.length>0 ? Math.max(...data.map(i=>i.id))+1 : 3;
+            data.push({ id:newId, title, price, category, images, desc, discount:0 });
+        }
+        saveAllToLocal();
+        closeModal('formModal');
+        renderGrid();
+        showMessage("تم", "تم حفظ الرحلة بنجاح.", "check_circle");
+    }
+    
+    // ==================== عرض التفاصيل ====================
+    function openViewModal(id) {
+        const item = data.find(i=>i.id===id);
+        if(!item) return;
+        currentViewItem = item;
+        activeItemPriceEGP = item.price - (item.price * (item.discount/100));
+        document.getElementById('viewTitle').innerText = item.title;
+        document.getElementById('viewCategory').innerText = item.category;
+        document.getElementById('viewDesc').innerText = item.desc;
+        document.getElementById('viewPrice').innerText = activeItemPriceEGP;
+        if(item.discount > 0) {
+            document.getElementById('viewDiscountBadge').innerText = `خصم ${item.discount}%`;
+            document.getElementById('viewDiscountBadge').classList.remove('hidden');
+        } else document.getElementById('viewDiscountBadge').classList.add('hidden');
+        
+        const transSelect = document.getElementById('bookTransport');
+        transSelect.innerHTML = transportOptions.map(t=>`<option value="${t.price}">${t.name} (${t.price} ج.م)</option>`).join('');
+        document.getElementById('bookGuests').value = 1;
+        document.getElementById('bookGuide').checked = false;
+        
+        currentImagesArray = (item.images && item.images.length) ? item.images : ["https://via.placeholder.com/800x400?text=No+Image"];
+        setupSlider();
+        startSlider();
+        
+        const adminControls = document.getElementById('viewAdminControls');
+        if(isAdmin) {
+            adminControls.classList.remove('hidden');
+            const btnEdit = document.getElementById('btnEditView');
+            const btnDelete = document.getElementById('btnDeleteView');
+            const btnDiscount = document.getElementById('btnDiscountView');
+            btnEdit.onclick = () => { closeModal('viewModal'); stopSlider(); openFormModal(item.id); };
+            btnDelete.onclick = () => { 
+                closeModal('viewModal'); 
+                stopSlider();
+                document.getElementById('confirmText').innerText = `هل تريد حذف "${item.title}"؟`;
+                document.getElementById('confirmBtn').onclick = () => { data = data.filter(i=>i.id!==item.id); saveAllToLocal(); renderGrid(); closeModal('confirmModal'); showMessage("تم", "تم حذف الرحلة.", "check_circle"); };
+                openModal('confirmModal');
+            };
+            btnDiscount.onclick = () => {
+                let newDisc = prompt("أدخل نسبة الخصم (0-100)", item.discount);
+                if(newDisc !== null) { newDisc = parseInt(newDisc); if(!isNaN(newDisc) && newDisc>=0 && newDisc<=100) { item.discount = newDisc; saveAllToLocal(); openViewModal(item.id); } else showMessage("خطأ", "نسبة غير صالحة.", "error"); }
+            };
+        } else adminControls.classList.add('hidden');
+        
+        updateTotalCurrency();
+        bindTotalUpdateEvents();
+        setupWhatsAppButton();
+        openModal('viewModal');
+    }
+    
+    // ==================== دوال السلايدر ====================
+    function setupSlider() {
+        const container = document.getElementById('sliderImages');
+        const dotsContainer = document.getElementById('sliderDots');
+        if(!container) return;
+        container.innerHTML = currentImagesArray.map((src,i)=>`<img src="${src}" class="slider-img ${i===0?'active':''}" data-index="${i}">`).join('');
+        dotsContainer.innerHTML = currentImagesArray.map((_,i)=>`<button class="w-2 h-2 rounded-full transition-all ${i===0?'bg-white scale-125':'bg-white/50'}" onclick="goToSlide(${i})"></button>`).join('');
+        currentSlideIndex = 0;
+    }
+    function changeSlide(direction) {
+        if(!currentImagesArray.length) return;
+        const imgs = document.querySelectorAll('#sliderImages .slider-img');
+        const dots = document.querySelectorAll('#sliderDots button');
+        if(!imgs.length) return;
+        imgs[currentSlideIndex].classList.remove('active');
+        if(dots[currentSlideIndex]) dots[currentSlideIndex].classList.remove('bg-white','scale-125'); dots[currentSlideIndex].classList.add('bg-white/50');
+        currentSlideIndex = (currentSlideIndex + direction + currentImagesArray.length) % currentImagesArray.length;
+        imgs[currentSlideIndex].classList.add('active');
+        if(dots[currentSlideIndex]) { dots[currentSlideIndex].classList.remove('bg-white/50'); dots[currentSlideIndex].classList.add('bg-white','scale-125'); }
+    }
+    function goToSlide(index) {
+        if(index===currentSlideIndex) return;
+        const imgs = document.querySelectorAll('#sliderImages .slider-img');
+        const dots = document.querySelectorAll('#sliderDots button');
+        if(!imgs.length) return;
+        imgs[currentSlideIndex].classList.remove('active');
+        if(dots[currentSlideIndex]) { dots[currentSlideIndex].classList.remove('bg-white','scale-125'); dots[currentSlideIndex].classList.add('bg-white/50'); }
+        currentSlideIndex = index;
+        imgs[currentSlideIndex].classList.add('active');
+        if(dots[currentSlideIndex]) { dots[currentSlideIndex].classList.remove('bg-white/50'); dots[currentSlideIndex].classList.add('bg-white','scale-125'); }
+    }
+    function startSlider() { if(sliderInterval) clearInterval(sliderInterval); sliderInterval = setInterval(()=>changeSlide(1), 4000); }
+    function stopSlider() { if(sliderInterval) { clearInterval(sliderInterval); sliderInterval = null; } }
+    
+    // ==================== التهيئة ====================
+    (async function init() {
+        await fetchExchangeRates();
+        loadFromLocal();
+        renderCategories();
+        renderGrid();
+        setInterval(fetchExchangeRates, 3600000);
+    })();
+</script>
 </body>
 </html>
