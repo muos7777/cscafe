@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-25T08:25:04.041Z",
+  "timestamp": "2026-05-25T08:28:13.670Z",
   "categories": [
     "رحلات بحرية",
     "سفاري",
@@ -22,30 +22,5 @@
       "price": 60
     }
   ],
-  "trips": [
-    {
-      "id": 1,
-      "title": "رحلة الأهرامات والمتحف المصري / Pyramids & Egyptian Museum",
-      "price": "600",
-      "discount": 0,
-      "category": "أماكن تاريخية",
-      "images": [
-        "https://images.unsplash.com/photo-1539667468225-eebb663053e6?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1572252009286-268caa9281f5?auto=format&fit=crop&w=800&q=80"
-      ],
-      "desc": "استمتع برحلة تاريخية كاملة - أهرامات الجيزة، أبو الهول والمتحف المصري."
-    },
-    {
-      "id": 2,
-      "title": "فندق فورسيزونز الإسكندرية / Four Seasons Alexandria",
-      "price": "4500",
-      "discount": 0,
-      "category": "فنادق ومنتجعات",
-      "images": [
-        "https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80"
-      ],
-      "desc": "إقامة فاخرة مطلة على البحر. تشمل غرفة مزدوجة وإفطار."
-    }
-  ]
+  "trips": []
 }
