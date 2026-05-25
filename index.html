@@ -106,7 +106,7 @@
 <!-- Modal تأكيد -->
 <div id="confirmModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><h3 id="confirmTitle" class="text-lg font-bold mb-2">تأكيد / Confirm</h3><p id="confirmText" class="text-gray-600 text-sm mb-6"></p><div class="flex gap-3 justify-end"><button onclick="closeModal('confirmModal')" class="px-4 py-2 text-gray-600">إلغاء / Cancel</button><button id="confirmBtn" class="px-4 py-2 bg-google-red text-white rounded-lg">تأكيد / Confirm</button></div></div></div>
 
-<!-- Modal المصادقة (تم إزالة الرقم 345 من placeholder) -->
+<!-- Modal المصادقة (تم إزالة الرقم من placeholder) -->
 <div id="authModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-content bg-white rounded-2xl w-full max-w-sm p-6"><div class="flex justify-between items-center mb-4"><h3 class="text-xl font-bold flex gap-2"><span class="material-icons-round text-google-blue">lock</span> الإدارة / Admin</h3><button onclick="closeModal('authModal')" class="text-gray-400"><span class="material-icons-round">close</span></button></div><input type="password" id="adminPassword" placeholder="كلمة المرور / Password" class="g-input mb-4" onkeypress="if(event.key==='Enter') checkPassword()"><button onclick="checkPassword()" class="w-full bg-google-blue text-white py-2 rounded-lg">دخول / Login</button></div></div>
 
 <!-- Modal إدارة الأقسام -->
@@ -168,8 +168,8 @@
     let activeCategory = "الكل";
     let categories = ["الكل", "رحلات بحرية", "سفاري", "أماكن تاريخية", "فنادق ومنتجعات"];
     let data = [
-        { id: 1, title: "رحلة الأهرامات والمتحف المصري / Pyramids & Egyptian Museum", price: "600", discount: 0, category: "أماكن تاريخية", images: ["https://images.unsplash.com/photo-1539667468225-eebb663053e6?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1572252009286-268caa9281f5?auto=format&fit=crop&w=800&q=80"], desc: "استمتع برحلة تاريخية كاملة - أهرامات الجيزة، أبو الهول والمتحف المصري." },
-        { id: 2, title: "فندق فورسيزونز الإسكندرية / Four Seasons Alexandria", price: "4500", discount: 0, category: "فنادق ومنتجعات", images: ["https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80"], desc: "إقامة فاخرة مطلة على البحر. تشمل غرفة مزدوجة وإفطار." }
+        { id: 1, title: "رحلة الأهرامات والمتحف المصري / Pyramids & Egyptian Museum", price: 600, discount: 0, category: "أماكن تاريخية", images: ["https://images.unsplash.com/photo-1539667468225-eebb663053e6?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1572252009286-268caa9281f5?auto=format&fit=crop&w=800&q=80"], desc: "استمتع برحلة تاريخية كاملة - أهرامات الجيزة، أبو الهول والمتحف المصري." },
+        { id: 2, title: "فندق فورسيزونز الإسكندرية / Four Seasons Alexandria", price: 4500, discount: 0, category: "فنادق ومنتجعات", images: ["https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=800&q=80","https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80"], desc: "إقامة فاخرة مطلة على البحر. تشمل غرفة مزدوجة وإفطار." }
     ];
     let guidePrice = 50;
     let transportOptions = [{ name: "بدون توصيل / No Transport", price: 0 },{ name: "عربة / Car", price: 60 },{ name: "موتسيكل / Motorcycle", price: 60 }];
@@ -246,128 +246,14 @@
         };
     }
     
-    // ==================== دوال التكبير ====================
+    // ==================== دوال التكبير (تبقى محلية لأنها تخص المستخدم) ====================
     function setBaseFontSize(val) { let newSize = Math.min(24, Math.max(12, val)); document.documentElement.style.setProperty('--base-font-size', newSize + 'px'); localStorage.setItem('cstravel_fontSize', newSize); }
     function changeFontSize(delta) { let current = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--base-font-size')) || 16; setBaseFontSize(current + delta); }
     function resetFontSize() { setBaseFontSize(16); }
     function loadFontSize() { let saved = localStorage.getItem('cstravel_fontSize'); if(saved) setBaseFontSize(parseFloat(saved)); else setBaseFontSize(16); }
     function updateZoomButtonsVisibility() { const container = document.getElementById('zoomButtonsContainer'); if(isAdmin) container.classList.remove('hidden'); else container.classList.add('hidden'); }
     
-    // ==================== التخزين المحلي + JSON ====================
-    function saveAllToLocal() {
-        localStorage.setItem('cstravel_data', JSON.stringify(data));
-        localStorage.setItem('cstravel_cats', JSON.stringify(categories));
-        localStorage.setItem('cstravel_guidePrice', guidePrice);
-        localStorage.setItem('cstravel_transports', JSON.stringify(transportOptions));
-    }
-    
-    function loadFromLocal() {
-        const savedData = localStorage.getItem('cstravel_data');
-        const savedCats = localStorage.getItem('cstravel_cats');
-        const savedGuide = localStorage.getItem('cstravel_guidePrice');
-        const savedTrans = localStorage.getItem('cstravel_transports');
-        if(savedData) data = JSON.parse(savedData);
-        if(savedCats) categories = JSON.parse(savedCats);
-        if(savedGuide) guidePrice = parseInt(savedGuide) || 50;
-        if(savedTrans) transportOptions = JSON.parse(savedTrans);
-        data = data.map(item => ({...item, discount: item.discount || 0}));
-        if(!Array.isArray(transportOptions)) transportOptions = [{ name: "بدون توصيل / No Transport", price: 0 }];
-        if(!categories.includes("الكل")) categories.unshift("الكل");
-        loadFontSize();
-    }
-    
-    // تصدير جميع البيانات إلى JSON وتنزيلها
-    function exportToJSON() {
-        const exportData = {
-            version: "1.0",
-            timestamp: new Date().toISOString(),
-            categories: categories.filter(c => c !== "الكل"),
-            guidePrice: guidePrice,
-            transportOptions: transportOptions,
-            trips: data
-        };
-        const jsonStr = JSON.stringify(exportData, null, 2);
-        const blob = new Blob([jsonStr], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `cstravel_backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showMessage("تصدير ناجح", "تم تصدير جميع البيانات إلى ملف JSON.", "download");
-    }
-    
-    // استيراد البيانات من ملف JSON (رفع ملف محلي)
-    function importFromJSONFile() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'application/json';
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                try {
-                    const imported = JSON.parse(ev.target.result);
-                    if (imported.categories) categories = ["الكل", ...imported.categories];
-                    if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
-                    if (imported.transportOptions) transportOptions = imported.transportOptions;
-                    if (imported.trips) {
-                        data = imported.trips;
-                        const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
-                        let nextId = maxId + 1;
-                        data = data.map(item => ({ ...item, id: item.id || nextId++ }));
-                    }
-                    saveAllToLocal();
-                    renderCategories();
-                    renderGrid();
-                    if (isAdmin) {
-                        renderCategoriesListAdmin();
-                        renderTransportList();
-                        document.getElementById('guidePriceInput').value = guidePrice;
-                    }
-                    showMessage("استيراد ناجح", "تم استيراد البيانات بنجاح وتحديث الصفحة.", "check_circle");
-                } catch(err) {
-                    showMessage("خطأ", "الملف غير صالح أو تالف.", "error");
-                }
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    }
-    
-    // تحديث البيانات من ملف JSON على الخادم (افتراضياً travel_data.json)
-    async function refreshFromServerJSON() {
-        try {
-            const response = await fetch(`travel_data.json?t=${Date.now()}`, { cache: 'no-store' });
-            if (!response.ok) throw new Error('File not found');
-            const imported = await response.json();
-            if (imported.categories) categories = ["الكل", ...imported.categories];
-            if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
-            if (imported.transportOptions) transportOptions = imported.transportOptions;
-            if (imported.trips) {
-                data = imported.trips;
-                const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
-                let nextId = maxId + 1;
-                data = data.map(item => ({ ...item, id: item.id || nextId++ }));
-            }
-            saveAllToLocal();
-            renderCategories();
-            renderGrid();
-            if (isAdmin) {
-                renderCategoriesListAdmin();
-                renderTransportList();
-                document.getElementById('guidePriceInput').value = guidePrice;
-            }
-            showMessage("تحديث ناجح", "تم تحديث البيانات من travel_data.json.", "sync");
-        } catch(e) {
-            showMessage("خطأ", "لم يتم العثور على ملف travel_data.json في نفس المسار.", "error");
-        }
-    }
-    
-    // ==================== دوال مساعدة للواجهة ====================
+    // ==================== دوال مساعدة ====================
     function openModal(id) { document.getElementById(id).classList.add('active'); document.body.classList.add('modal-open'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); if(document.querySelectorAll('.modal-overlay.active').length === 0) document.body.classList.remove('modal-open'); }
     function showMessage(title, text, icon="info") { document.getElementById('msgTitle').innerText = title; document.getElementById('msgText').innerText = text; document.getElementById('msgIcon').innerText = icon; openModal('msgModal'); }
@@ -451,7 +337,6 @@
         if(!newCat) return showMessage("تنبيه", "الرجاء إدخال اسم القسم.", "warning");
         if(categories.includes(newCat)) return showMessage("تنبيه", "القسم موجود مسبقاً.", "warning");
         categories.push(newCat);
-        saveAllToLocal();
         renderCategories();
         renderCategoriesListAdmin();
         input.value = "";
@@ -461,7 +346,6 @@
         if(cat === "الكل") return;
         if(data.some(item => item.category === cat)) { showMessage("لا يمكن الحذف", "يوجد رحلات تابعة لهذا القسم. قم بتغيير قسمها أولاً.", "error"); return; }
         categories = categories.filter(c => c !== cat);
-        saveAllToLocal();
         renderCategories();
         if(activeCategory === cat) setActiveCategory("الكل");
         openCategoryManageModal();
@@ -475,7 +359,7 @@
         if(!container) return;
         container.innerHTML = transportOptions.map((t, idx) => `<div class="flex justify-between items-center bg-gray-50 p-2 rounded"><span>${t.name} (${t.price} ج.م)</span><button onclick="deleteTransport(${idx})" class="text-red-500"><span class="material-icons-round text-sm">delete</span></button></div>`).join('');
     }
-    function deleteTransport(idx) { transportOptions.splice(idx,1); saveAllToLocal(); renderTransportList(); }
+    function deleteTransport(idx) { transportOptions.splice(idx,1); renderTransportList(); }
     function showAddTransportForm() { document.getElementById('addTransportForm').classList.remove('hidden'); }
     function hideAddTransportForm() { document.getElementById('addTransportForm').classList.add('hidden'); document.getElementById('newTransName').value = ""; document.getElementById('newTransPrice').value = ""; }
     function closeAddTransportForm() { hideAddTransportForm(); }
@@ -484,12 +368,11 @@
         const price = parseInt(document.getElementById('newTransPrice').value);
         if(!name || isNaN(price)) return showMessage("تنبيه", "الرجاء إدخال اسم وسعر صحيح.", "warning");
         transportOptions.push({ name, price });
-        saveAllToLocal();
         renderTransportList();
         hideAddTransportForm();
         showMessage("تم", "تمت إضافة وسيلة النقل.", "check_circle");
     }
-    function saveGuidePrice() { const newPrice = parseInt(document.getElementById('guidePriceInput').value); if(!isNaN(newPrice) && newPrice>=0) { guidePrice = newPrice; saveAllToLocal(); showMessage("تم", "تم تحديث سعر المرشد.", "check_circle"); } else showMessage("خطأ", "قيمة غير صحيحة.", "error"); }
+    function saveGuidePrice() { const newPrice = parseInt(document.getElementById('guidePriceInput').value); if(!isNaN(newPrice) && newPrice>=0) { guidePrice = newPrice; showMessage("تم", "تم تحديث سعر المرشد.", "check_circle"); } else showMessage("خطأ", "قيمة غير صحيحة.", "error"); }
     
     // ==================== إضافة / تعديل رحلة ====================
     function openFormModal(editId=null) {
@@ -542,7 +425,6 @@
             const newId = data.length>0 ? Math.max(...data.map(i=>i.id))+1 : 3;
             data.push({ id:newId, title, price, category, images, desc, discount:0 });
         }
-        saveAllToLocal();
         closeModal('formModal');
         renderGrid();
         showMessage("تم", "تم حفظ الرحلة بنجاح.", "check_circle");
@@ -583,12 +465,12 @@
                 closeModal('viewModal'); 
                 stopSlider();
                 document.getElementById('confirmText').innerText = `هل تريد حذف "${item.title}"؟`;
-                document.getElementById('confirmBtn').onclick = () => { data = data.filter(i=>i.id!==item.id); saveAllToLocal(); renderGrid(); closeModal('confirmModal'); showMessage("تم", "تم حذف الرحلة.", "check_circle"); };
+                document.getElementById('confirmBtn').onclick = () => { data = data.filter(i=>i.id!==item.id); renderGrid(); closeModal('confirmModal'); showMessage("تم", "تم حذف الرحلة.", "check_circle"); };
                 openModal('confirmModal');
             };
             btnDiscount.onclick = () => {
                 let newDisc = prompt("أدخل نسبة الخصم (0-100)", item.discount);
-                if(newDisc !== null) { newDisc = parseInt(newDisc); if(!isNaN(newDisc) && newDisc>=0 && newDisc<=100) { item.discount = newDisc; saveAllToLocal(); openViewModal(item.id); } else showMessage("خطأ", "نسبة غير صالحة.", "error"); }
+                if(newDisc !== null) { newDisc = parseInt(newDisc); if(!isNaN(newDisc) && newDisc>=0 && newDisc<=100) { item.discount = newDisc; openViewModal(item.id); } else showMessage("خطأ", "نسبة غير صالحة.", "error"); }
             };
         } else adminControls.classList.add('hidden');
         
@@ -632,12 +514,118 @@
     function startSlider() { if(sliderInterval) clearInterval(sliderInterval); sliderInterval = setInterval(()=>changeSlide(1), 4000); }
     function stopSlider() { if(sliderInterval) { clearInterval(sliderInterval); sliderInterval = null; } }
     
-    // ==================== التهيئة ====================
+    // ==================== دوال JSON (تصدير/استيراد/تحديث) بدون حفظ محلي ====================
+    function exportToJSON() {
+        const exportData = {
+            version: "1.0",
+            timestamp: new Date().toISOString(),
+            categories: categories.filter(c => c !== "الكل"),
+            guidePrice: guidePrice,
+            transportOptions: transportOptions,
+            trips: data
+        };
+        const jsonStr = JSON.stringify(exportData, null, 2);
+        const blob = new Blob([jsonStr], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cstravel_backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showMessage("تصدير ناجح", "تم تصدير جميع البيانات إلى ملف JSON.", "download");
+    }
+    
+    function importFromJSONFile() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const imported = JSON.parse(ev.target.result);
+                    if (imported.categories) categories = ["الكل", ...imported.categories];
+                    if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
+                    if (imported.transportOptions) transportOptions = imported.transportOptions;
+                    if (imported.trips) {
+                        data = imported.trips;
+                        const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                        let nextId = maxId + 1;
+                        data = data.map(item => ({ ...item, id: item.id || nextId++ }));
+                    }
+                    renderCategories();
+                    renderGrid();
+                    if (isAdmin) {
+                        renderCategoriesListAdmin();
+                        renderTransportList();
+                        document.getElementById('guidePriceInput').value = guidePrice;
+                    }
+                    showMessage("استيراد ناجح", "تم استيراد البيانات بنجاح وتحديث الصفحة.", "check_circle");
+                } catch(err) {
+                    showMessage("خطأ", "الملف غير صالح أو تالف.", "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+    
+    async function refreshFromServerJSON() {
+        try {
+            const response = await fetch(`travel_data.json?t=${Date.now()}`, { cache: 'no-store' });
+            if (!response.ok) throw new Error('File not found');
+            const imported = await response.json();
+            if (imported.categories) categories = ["الكل", ...imported.categories];
+            if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
+            if (imported.transportOptions) transportOptions = imported.transportOptions;
+            if (imported.trips) {
+                data = imported.trips;
+                const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                let nextId = maxId + 1;
+                data = data.map(item => ({ ...item, id: item.id || nextId++ }));
+            }
+            renderCategories();
+            renderGrid();
+            if (isAdmin) {
+                renderCategoriesListAdmin();
+                renderTransportList();
+                document.getElementById('guidePriceInput').value = guidePrice;
+            }
+            showMessage("تحديث ناجح", "تم تحديث البيانات من travel_data.json.", "sync");
+        } catch(e) {
+            showMessage("خطأ", "لم يتم العثور على ملف travel_data.json في نفس المسار.", "error");
+        }
+    }
+    
+    // ==================== التهيئة (لا تحميل من localStorage) ====================
     (async function init() {
         await fetchExchangeRates();
-        loadFromLocal();
+        // لا نحاول تحميل بيانات محفوظة مسبقاً، نبدأ بالبيانات الافتراضية
+        // ولكن نحاول جلب travel_data.json إن وجد
+        try {
+            const response = await fetch(`travel_data.json?t=${Date.now()}`, { cache: 'no-store' });
+            if (response.ok) {
+                const imported = await response.json();
+                if (imported.categories) categories = ["الكل", ...imported.categories];
+                if (imported.guidePrice !== undefined) guidePrice = imported.guidePrice;
+                if (imported.transportOptions) transportOptions = imported.transportOptions;
+                if (imported.trips) {
+                    data = imported.trips;
+                    const maxId = data.reduce((max, item) => Math.max(max, item.id || 0), 0);
+                    let nextId = maxId + 1;
+                    data = data.map(item => ({ ...item, id: item.id || nextId++ }));
+                }
+            }
+        } catch(e) {
+            console.log("لم يتم العثور على travel_data.json، استخدام البيانات الافتراضية");
+        }
         renderCategories();
         renderGrid();
+        loadFontSize(); // فقط لحجم الخط
         setInterval(fetchExchangeRates, 3600000);
     })();
 </script>
